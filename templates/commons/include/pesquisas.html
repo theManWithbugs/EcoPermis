@@ -1,0 +1,39 @@
+{% extends 'commons/base.html' %}
+{% load static %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/pesquisas.css' %}">
+{% endblock css %}
+
+{% block content %}
+
+  <div class="p-2">
+    <a href="#">
+      <button>Em andamento</button>
+    </a>
+
+    <a href="#">
+      <button>Finalizadas</button>
+    </a>
+  </div>
+
+  {% for x in objs %}
+    <a href="{% url 'info_pesquisa' x.id %}">
+      <div class="card mb-3">
+        <div class="row g-0">
+          <!-- <div class="col-md-4">
+            <img src="..." class="img-fluid rounded-start" alt="...">
+          </div> -->
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title">{{ x.acao_realizada }}</h5>
+              <p class="card-text">Tipo de solicitação: {{ x.tipo_solic }}</p>
+              <!-- <p class="card-text"><small class="text-muted">{{ x.status }}</small></p> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+  {% endfor %}
+
+{% endblock content %}

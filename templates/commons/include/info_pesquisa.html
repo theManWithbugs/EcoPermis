@@ -1,0 +1,33 @@
+{% extends 'commons/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container">
+  <div class="bg-white p-3 rounded">
+    {% for x in obj %}
+      <div class="row">
+        <div class="col-md-6">
+          Ação realizada: {{ x.acao_realizada }}
+        </div>
+        <div class="col-md-6">
+          Unidade de conservação: {{ x.unidade_cons }}
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          Tipo de solicitação: {{ x.tipo_solic }}
+        </div>
+          <div class="col-md-6">
+            Fotografias e imagens? da UC?: {{ x.foto }}
+          </div>
+        <div class="col-md-6">
+          Licença da instituição: {{ x.licenca_inst }}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock content %}
