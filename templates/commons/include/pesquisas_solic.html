@@ -1,0 +1,56 @@
+{% extends 'commons/base.html' %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/pesquisas_solic.css' %}">
+{% endblock css %}
+
+{% block content %}
+
+<div class="p-2">
+  <a href="#">
+    <button class="btn btn-outline-success">Aguardando aprovação</button>
+  </a>
+
+  <a href="#">
+    <button class="btn btn-outline-success">Ultimas Aprovadas</button>
+  </a>
+</div>
+
+{% for x in objs %}
+{% if x.status == False %}
+<a href="{% url 'info_pesquisa' x.id %}">
+<div class="card mb-3">
+  <div class="row g-0">
+    <!-- <div class="col-md-4">
+              <img src="..." class="img-fluid rounded-start" alt="...">
+            </div> -->
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{ x.acao_realizada }}</h5>
+        <p class="card-text">Tipo de solicitação: {{ x.tipo_solic }}</p>
+      </div>
+    </div>
+  </div>
+  <!-- <p>
+    <button class="btn btn-primary ms-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample"
+      aria-expanded="false" aria-controls="collapseExample">
+      Informações da solicitação
+    </button>
+  </p>
+  <div class="collapse" id="collapseExample">
+    <div class="card card-body">
+      <div class="row">
+          <div class="info-card info-card-orange p-2">
+            <label>Ação Realizada</label>
+            <p>{{ x.acao_realizada }}</p>
+          </div>
+      </div>
+    </div>
+  </div> -->
+</div>
+</a>
+{% endif %}
+{% endfor %}
+
+{% endblock content %}

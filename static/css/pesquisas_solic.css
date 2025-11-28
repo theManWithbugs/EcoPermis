@@ -1,0 +1,70 @@
+a {
+  text-decoration: none;
+  color: black;
+}
+
+a:hover {
+  color: black;
+}
+
+.info-card p {
+  margin-bottom: 0;
+  margin-top: 10px;
+  color: #333;
+  font-size: 1.05rem;
+}
+
+
+/* Variações de Cores para Info Cards */
+.info-card-green {
+  background-color: #e8f5e9;
+  border-left-color: #4caf50;
+}
+
+.info-card-blue {
+  background-color: #e3f2fd;
+  border-left-color: #2196F3;
+}
+
+.info-card-purple {
+  background-color: #f3e5f5;
+  border-left-color: #9c27b0;
+}
+
+.info-card-orange {
+  background-color: #fff3e0;
+  border-left-color: #ff9800;
+}
+
+.info-card-pink {
+  background-color: #fce4ec;
+  border-left-color: #e91e63;
+}
+
+.info-card-gray {
+  background-color: #eceff1;
+  border-left-color: #607d8b;
+}
+
+.info-card-red {
+  background-color: #ffebee;
+  border-left-color: #f44336;
+}
+
+.info-card-light-green {
+  background-color: #c8e6c9;
+  border-left-color: #4caf50;
+}
+
+.info-card-teal {
+  background-color: #b2dfdb;
+  border-left-color: #009688;
+}
+
+.info-card label {
+  color: #999;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: bold;
+  display: block;
+}

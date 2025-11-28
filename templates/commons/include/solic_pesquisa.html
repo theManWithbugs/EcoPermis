@@ -1,185 +1,221 @@
 {% extends 'commons/base.html' %}
 {% load static %}
 
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/add_button.css' %}">
+{% endblock css %}
+
 {% block content %}
 
-<div class="container">
-  <div class="bg-white border border-1 p-3">
-    <h4> (<span class="text-danger"> * </span>)
-      campos obrigatorios</h4>
-  </div>
-</div>
-
-  {% if dados_pessoais %}
-  {% else %}
-    <div class="container">
-    <div class="bg-white border border-1 p-3">
-      <h4 class="ms-3 mb-3">Dados pessoais</h4>
-      {% if form.errors %}
-      <div class="alert alert-danger">
-        <h5>Erros no Formulário:</h5>
-        <ul>
-          {% for field, errors in form.errors.items %}
-            <li>
-              <strong>{{ field }}:</strong> {{ errors|join:", " }}
-            </li>
-          {% endfor %}
-        </ul>
-      </div>
-      {% endif %}
-      <form action="{% url 'solic_pesq' %}" method="POST">
-        {% csrf_token %}
-        <div class="container">
-          <div class="row">
-            <div class="col-md-8">
-              {{ form.nome.label }}
-              {{ form.nome }}
-            </div>
-            <div class="col-md-4">
-              {{ form.sexo.label }}
-              {{ form.sexo }}
-            </div>
-          </div>
-        </div>
-
-        <div class="container mt-4">
-          <div class="row">
-            <div class="col">
-              {{ form.estado.label }}
-              {{ form.estado }}
-            </div>
-              <div class="col">
-                {{ form.municipio.label }}
-                {{ form.municipio }}
-              </div>
-            <div class="col">
-              {{ form.celular.label }}
-              {{ form.celular }}
-            </div>
-          </div>
-        </div>
-
-        <div class="container mt-4">
-          <div class="row">
-            <div class="col">
-              {{ form.endereco.label }}
-              {{ form.endereco }}
-            </div>
-          </div>
-        </div>
-
-        <div class="container mt-4">
-          <div class="row">
-            <div class="col">
-              {{ form.rg.label }}
-              {{ form.rg }}
-            </div>
-            <div class="col">
-              {{ form.org_emiss.label }}
-              {{ form.org_emiss }}
-            </div>
-          </div>
-        </div>
-
-        <div class="container mt-4">
-          <div class="row">
-            <div class="col">
-              {{ form.cpf.label }}
-              {{ form.cpf }}
-            </div>
-            <div class="col">
-              {{ form.telefone_fixo.label }}
-              {{ form.telefone_fixo }}
-            </div>
-          </div>
-        </div>
-
-        <div class="container mt-4">
-          <div class="row">
-            <div class="col">
-              {{ form.cep.label }}
-              {{ form.cep }}
-            </div>
-              <div class="col">
-                {{ form.profis.label }}
-                {{ form.profis }}
-              </div>
-            <div class="col">
-              {{ form.email.label }}
-              {{ form.email }}
-            </div>
-          </div>
-        </div>
-
-        <button type="submit" class="btn btn-success mt-3 ms-2">
-          Enviar</button>
-      </form>
+<div class="container mt-5 mb-5">
+    <div class="mb-4">
+        <h2 class="fw-bold text-success">Solicitação de Pesquisa</h2>
+        <p class="text-muted">Preencha os campos abaixo para registrar sua solicitação de pesquisa</p>
     </div>
-  </div>
-  {% endif %}
+    <form action="{% url 'solic_pesq' %}" method="post">
+        {% csrf_token %}
 
-  <div class="container mt-4">
-    <div class="bg-white border border-1 p-3">
-      <h4 class="ms-3 mb-3">Dados da pesquisa</h4>
-      <div class="container">
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ form.non_field_errors }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endif %}
+
+        <div class="row mb-3">
+            <div class="col-md-12">
+                {{ form.acao_realizada.label_tag }}
+                {{ form.acao_realizada }}
+                {% for error in form.acao_realizada.errors %}
+                <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-12">
+                {{ form.unidade_cons.label_tag }}
+                {{ form.unidade_cons }}
+                {% for error in form.unidade_cons.errors %}
+                <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                {{ form.tipo_solic.label_tag }}
+                {{ form.tipo_solic }}
+                {% for error in form.tipo_solic.errors %}
+                <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="col-md-4">
+                {{ form.foto.label_tag }}
+                {{ form.foto }}
+                {% for error in form.foto.errors %}
+                <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="col-md-4">
+                {{ form.licenca_inst.label_tag }}
+                {{ form.licenca_inst }}
+                {% for error in form.licenca_inst.errors %}
+                <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-12">
+                {{ form.periodo_dur.label_tag }}
+                {{ form.periodo_dur }}
+                {% for error in form.periodo_dur.errors %}
+                <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                {{ form.retorno_comuni.label_tag }}
+                {{ form.retorno_comuni }}
+                {% for error in form.retorno_comuni.errors %}
+                <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="col-md-6">
+                {{ form.area_atuacao.label_tag }}
+                {{ form.area_atuacao }}
+                {% for error in form.area_atuacao.errors %}
+                <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                {{ form.inicio_atividade.label_tag }}
+                {{ form.inicio_atividade }}
+                {% for error in form.inicio_atividade.errors %}
+                <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="col-md-6">
+                {{ form.final_atividade.label_tag }}
+                {{ form.final_atividade }}
+                {% for error in form.final_atividade.errors %}
+                <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            </div>
+        </div>
 
         <div class="row">
-          <div class="col-md-6">
-            {{ form_pesq.acao_realizada.label }}
-            {{ form_pesq.acao_realizada }}
-          </div>
-
-          <div class="col-md-6">
-            {{ form_pesq.unidade_cons.label }}
-            {{ form_pesq.unidade_cons }}
-          </div>
-        </div>
-
-        <div class="row mt-4">
-          <div class="col-md-6">
-            {{ form_pesq.tipo_solic.label }}
-            {{ form_pesq.tipo_solic }}
-          </div>
-        </div>
-
-        <div class="row mt-4">
-          <div class="col">
-            {{ form_pesq.rel_final.label }}
-            {{ form_pesq.rel_final }}
-          </div>
-        </div>
-
-        <div class="row mt-4">
-          <div class="col-md-6">
-            {{ form_pesq.foto.label }}
-            {{ form_pesq.foto }}
-          </div>
-          <div class="col-md-6">
-            {{ form_pesq.licenca_inst.label }}
-            {{ form_pesq.licenca_inst }}
-          </div>
-        </div>
-
-        <div class="row mt-4">
-          <div class="col-md-4">
-            {{ form_pesq.periodo_dur.label }}
-            {{ form_pesq.periodo_dur }}
-          </div>
-            <div class="col-md-4">
-              {{ form_pesq.retorno_comuni.label }}
-              {{ form_pesq.retorno_comuni }}
+            <div class="col-md-12">
+                {{ form.status.label_tag }}
+                {{ form.status }}
+                {% for error in form.status.errors %}
+                <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
             </div>
-          <div class="col-md-4">
-            {{ form_pesq.area_atuacao.label }}
-            {{ form_pesq.area_atuacao }}
-          </div>
         </div>
 
-          <button type="submit" class="btn btn-success mt-3">
-          Enviar</button>
-      </div>
-    </div>
-  </div>
+        <hr>
+        <h5>Membros da Equipe</h5>
+
+        <div class="container">
+            <div id="membros_formset">
+
+                {{ formset.management_form }}
+
+                {% if formset.non_form_errors %}
+                <div class="alert alert-danger">{{ formset.non_form_errors }}</div>
+                {% endif %}
+
+                {% for subform in formset %}
+                <div class="card mb-2 p-3 inline_form">
+                    {# include hidden fields (id, DELETE, etc) required by formset plugin #}
+                    {% for hidden in subform.hidden_fields %}
+                    {{ hidden }}
+                    {% endfor %}
+
+                    <div class="container mb-2">
+                        <div class="row">
+                            <div class="col-md-4">
+                                {{ subform.nome.label_tag }}
+                                {{ subform.nome }}
+                                {% for error in subform.nome.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="col-md-4">
+                                {{ subform.rg.label_tag }}
+                                {{ subform.rg }}
+                                {% for error in subform.rg.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="col-md-4">
+                                {{ subform.cpf.label_tag }}
+                                {{ subform.cpf }}
+                                {% for error in subform.cpf.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="container">
+                        {{ subform.instituicao.label_tag }}
+                        {{ subform.instituicao }}
+                        {% for error in subform.instituicao.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+
+        <div class="text-center mt-3">
+            <button type="submit" class="btn btn-success">Salvar</button>
+        </div>
+    </form>
 </div>
 
 {% endblock content %}
+
+{% block js %}
+<script src="{% static 'js/jquery_3.7.1.js' %}"></script>
+<script src="{% static 'js/jquery.formset.js' %}"></script>
+<script type="text/javascript">
+    $(function () {
+        // Initialize formset
+        $('#membros_formset .inline_form').formset({
+            prefix: '{{ formset.prefix }}',
+            deleteText: '',
+            addText: '<button type="button" class="cssbuttons-io-button center-svg" aria-label="Adicionar membro"><svg height="20" width="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M0 0h24v24H0z" fill="none"></path><path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z" fill="currentColor"></path></svg></button>',
+            formCssClass: 'me-5',
+
+            added: function (row) {
+                // Apply styling to new form
+                $(row).css({
+                    'border': '1px solid #ddd',
+                    'padding': '10px',
+                    'margin-bottom': '10px',
+                    'border-radius': '5px',
+                    'background-color': '#FFFFFF',
+                    'row-gap': '10px',
+                });
+            }
+        });
+    });
+</script>
+{% endblock js %}

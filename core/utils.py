@@ -1,3 +1,5 @@
+from django.db import models
+from .models import *
 
 def check_number(phone):
   DDD = str(f"({phone[:2]})")
@@ -23,3 +25,21 @@ def validador_cpf(cpf):
       return False
 
   return True
+
+def calcular_data(data_inicio, data_final):
+
+  data_inicio = data_inicio.split('-')
+  data_final = data_final.split('-')
+
+  qnt_anos = int(data_final[0]) - int(data_inicio[0])
+  qnt_meses = int(data_final[1]) - int(data_inicio[1])
+
+  if qnt_meses == 0:
+    ano_txt = "ano" if qnt_anos == 1 else "anos"
+    duracao = f"Duração de: {qnt_anos} {ano_txt}"
+  else:
+    ano_txt = "ano" if qnt_anos == 1 else "anos"
+    mes_txt = "mês" if qnt_meses == 1 else "meses"
+    duracao = f"Duração de: {qnt_anos} {ano_txt} e {qnt_meses} {mes_txt}"
+
+  return duracao

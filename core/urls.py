@@ -9,10 +9,11 @@ urlpatterns = [
     path('home/login', views.perfil, name='perfil'),
 
     path('home/', views.home, name='home'),
-    path('home/pesquisas/', views.pesquisas, name='pesquisas'),
+    path('home/pesquisas_solic/', views.pesquisas_solic, name='pesquisas_solic'),
     path('home/info_pesquisa/<str:id>/', views.info_pesquisa, name='info_pesquisa'),
+    path('excluir_arq/<str:id>/', views.excluir_arq, name='excluir_arq'),
 
     # Forms view
-    path('home/solic_pesquisa', views.solic_pesquisa, name='solic_pesq'),
-    path('home/pagina_teste', views.pagina_test, name='pagina_teste')
+    path('home/dados_pessoais/', views.dados_pessoais, name='dados_pessoais'),
+    path('home/solic_pesquisa/', views.solic_pesquisa, name='solic_pesq'),
 ]

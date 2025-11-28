@@ -32,7 +32,7 @@ class DadosPessoais(models.Model):
     rg = models.CharField(blank=False, null=False,
                           max_length=11, verbose_name='RG')
     org_emiss = models.CharField(
-        blank=False, null=False, max_length=30, verbose_name='Orgão emissor')
+        blank=False, null=False, max_length=30, verbose_name='Orgão emissor(RG)')
     cpf = models.CharField(blank=False, null=False, validators=[
                            validador_cpf], max_length=11, verbose_name='CPF')
     telefone_fixo = models.CharField(blank=True, null=True, max_length=8)
@@ -89,19 +89,19 @@ class DadosSolicPesquisa(models.Model):
     licenca_inst = models.CharField(
         choices=YES_OR_NOT, blank=False, null=False, verbose_name='Licença de instituição responsavel?')
 
-    periodo_dur = models.CharField(
-        blank=False, null=False, verbose_name='Periodo de duração da atividade')
+    # periodo_dur = models.CharField(
+    #     blank=False, null=False, verbose_name='Periodo de duração da atividade')
 
     inicio_atividade = models.DateField(default=timezone.localdate)
     final_atividade = models.DateField(default=timezone.localdate)
 
     retorno_comuni = models.CharField(
-        blank=False, null=False, verbose_name='Retorno para a comunidade')
+        choices=YES_OR_NOT, blank=False, null=False, verbose_name='Retorno para a comunidade')
 
     area_atuacao = models.CharField(
         choices=CHOICES_AREA_ATUACAO, blank=False, null=False, verbose_name='Aréa de atuação')
 
-    status = models.BooleanField(default=True)
+    status = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.data_solicitacao}"
@@ -131,10 +131,16 @@ class MembroEquipe(models.Model):
     def __str__(self):
         return f"{self.nome}"
 
+def get_upload_path(instance, filename):
+    ano = timezone.now().year
+    area_atuacao = instance.pesquisa.area_atuacao
+
+    return os.path.join('rel_final_pesq', str(ano), str(area_atuacao), filename)
+
 class ArquivosRelFinal(models.Model):
     pesquisa = models.ForeignKey(
         DadosSolicPesquisa, on_delete=models.CASCADE, to_field='id', related_name='arq_pesquisa')
-    documento = models.FileField(upload_to='rel_final_pesq')
+    documento = models.FileField(upload_to=get_upload_path)
     upado_em = models.DateTimeField(default=timezone.now)
 
     def delete_documento(self):
@@ -146,6 +152,3 @@ class ArquivosRelFinal(models.Model):
 
     def __str__(self):
         return f"{self.pesquisa.acao_realizada}"
-
-    # def __str__(self):
-    #     return f"Documento de {self.cidadao.nome} - {self.upado_em.strftime('%Y-%m-%d %H:%M:%S')}"

@@ -6,6 +6,7 @@ from django.contrib import messages
 
 #Local imports
 from core.forms import *
+from .utils import *
 
 def pagina_sucesso(request):
     template_name = 'commons/include/msg_pages/pagina_sucesso.html'
@@ -44,33 +45,35 @@ def home(request):
     return render(request, template_name)
 
 @login_required
-def solic_pesquisa(request):
-    template_name = 'commons/include/solic_pesquisa.html'
+def dados_pessoais(request):
+    template_name = 'commons/include/dados_pessoais.html'
 
-    dados_pessoais = DadosPessoais.objects.filter(usuario=request.user)
+    usuario = request.user
 
     if request.method == 'POST':
         form = DadosPssForm(request.POST or None)
-        form_pesquisa = DadosPesqForm(request.POST or None)
         if form.is_valid():
-            pesquisa_form = form.save(commit=False)
-            pesquisa_form.usuario = request.user
-            pesquisa_form.save()
-            return redirect('home')
+            try:
+                obj = form.save(commit=False)
+                obj.usuario = usuario
+                obj.save()
+
+                messages.success(request, 'Cadastro atualizado!')
+                return redirect('solic_pesq')
+            except Exception as e:
+                messages.error(request, f'Ocorreu um erro: {e}')
     else:
         form = DadosPssForm()
-        form_pesquisa = DadosPesqForm()
 
     context = {
-        'form': form,
-        'form_pesq': form_pesquisa,
-        'dados_pessoais': dados_pessoais
+        'form': form
     }
 
     return render(request, template_name, context)
 
-def pagina_test(request):
-    template_name = 'commons/include/pagina_test.html'
+@login_required
+def solic_pesquisa(request):
+    template_name = 'commons/include/solic_pesquisa.html'
 
     # dados_pessoais = DadosPessoais.objects.filter(usuario=request.user)
     MembroEquipeFormset = inlineformset_factory(
@@ -79,6 +82,12 @@ def pagina_test(request):
     )
 
     prefix = 'membros'
+
+    usuario = request.user.id
+    dados_pss = DadosPessoais.objects.filter(usuario=usuario).first()
+
+    if dados_pss == None:
+        return redirect('dados_pessoais')
 
     if request.method == 'GET':
         form = DadosPesqForm()
@@ -113,10 +122,10 @@ def pagina_test(request):
 
     return render(request, template_name, context)
 
-def pesquisas(request):
-    template_name = 'commons/include/pesquisas.html'
+def pesquisas_solic(request):
+    template_name = 'commons/include/pesquisas_solic.html'
 
-    objs = DadosSolicPesquisa.objects.filter(status=True)
+    objs = DadosSolicPesquisa.objects.all().order_by('data_solicitacao')
 
     context = {
         'objs': objs
@@ -128,9 +137,66 @@ def info_pesquisa(request, id):
     template_name = 'commons/include/info_pesquisa.html'
 
     obj = DadosSolicPesquisa.objects.filter(id=id)
+    documentos = ArquivosRelFinal.objects.filter(pesquisa=obj.first())
+
+    form = Arq_Rel_Form(request.POST or None, request.FILES or None)
+
+    for x in obj:
+        inicio = x.inicio_atividade
+        final = x.final_atividade
+
+    duracao_pesq = calcular_data(str(inicio), str(final))
+
+    if request.method == 'POST':
+        if form.is_valid():
+            arq_pesquisa = form.save(commit=False)
+            arq_pesquisa.pesquisa = obj.first()
+
+            caminho_doc = str(arq_pesquisa.documento)
+            caminho_doc = caminho_doc.split('.')
+            doc_type = caminho_doc[-1]
+
+            if doc_type != 'pdf':
+                messages.error(request, 'Arquivos aceitos apenas em formato pdf!')
+                return redirect('info_pesquisa', id)
+
+            #Salva o arquivo
+            arq_pesquisa.save()
+
+            messages.success(request, 'Arquivo anexado com sucesso!')
+            return redirect('info_pesquisa', id)
+        else:
+            print(f"Erros do form: {form.errors}")
+            messages.error(request, 'Erro ao tentar salvar!')
 
     context = {
-        'obj': obj
+        'obj': obj,
+        'documentos': documentos,
+        'duracao_pesq': duracao_pesq,
     }
 
     return render(request, template_name, context)
+
+def excluir_arq(request, id):
+
+    pesquisa = DadosSolicPesquisa.objects.filter(id=id).first()
+    if request.method == 'POST':
+        documento_id = request.POST.get('documento_id')
+
+        if documento_id:
+            try:
+                arquivo = ArquivosRelFinal.objects.get(id=documento_id)
+                if pesquisa:
+
+                    documentos_associados = ArquivosRelFinal.objects.filter(id=documento_id)
+                    for doc in documentos_associados:
+                        doc.delete_documento()
+                    # pesquisa.delete()
+
+                arquivo.delete_documento()
+
+                messages.success(request, 'Arquivo Excluido com sucesso!')
+            except ArquivosRelFinal.DoesNotExist:
+                messages.error(request, 'Documento não encontrado!')
+
+    return redirect('info_pesquisa', id)

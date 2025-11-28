@@ -35,12 +35,13 @@ class DadosPesqForm(forms.ModelForm):
     self.fields['area_atuacao'].widget.attrs.update({'class': 'form-select'})
     self.fields['tipo_solic'].widget.attrs.update({'class': 'form-select'})
     self.fields['licenca_inst'].widget.attrs.update({'class': 'form-select'})
+    self.fields['retorno_comuni'].widget.attrs.update({'class': 'form-select'})
     self.fields['inicio_atividade'].widget = forms.DateInput(attrs={
-        'class': 'form-control form-control-sm',
+        'class': 'form-control form-control',
         'type': 'date',
       })
     self.fields['final_atividade'].widget = forms.DateInput(attrs={
-        'class': 'form-control form-control-sm',
+        'class': 'form-control form-control',
         'type': 'date',
       })
     # self.fields['licenca_inst'].widget.attrs.update({'class': 'form-select'})
@@ -54,3 +55,14 @@ class MembroEquipeForm(forms.ModelForm):
     super(MembroEquipeForm, self).__init__(*args, **kwargs)
     for f in self.fields:
       self.fields[f].widget.attrs['class'] = 'form-control'
+
+class Arq_Rel_Form(forms.ModelForm):
+  class Meta:
+    model = ArquivosRelFinal
+    fields = ['documento']
+
+  def __init__(self, *args, **kwargs):
+    super(Arq_Rel_Form, self).__init__(*args, **kwargs)
+    for f in self.fields:
+      self.fields[f].widget.attrs['class'] = 'form-control form-control-sm'
+      self.fields['documento'].widget.attrs['readonly'] = 'readonly'
