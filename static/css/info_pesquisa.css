@@ -41,9 +41,9 @@ h5 {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* Header Relatório */
+/* Header Relatório - Estilo Suave */
 .relatorio-header {
-  background: linear-gradient(90deg, #1a472a 0%, #2d5a3d 100%);
+  background: linear-gradient(90deg, #1a472a 0%, #2d5a3d 10%);
   padding: 30px;
 }
 

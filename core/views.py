@@ -177,6 +177,8 @@ def info_pesquisa(request, id):
 
     return render(request, template_name, context)
 
+#Only action
+
 def excluir_arq(request, id):
 
     pesquisa = DadosSolicPesquisa.objects.filter(id=id).first()
@@ -198,5 +200,17 @@ def excluir_arq(request, id):
                 messages.success(request, 'Arquivo Excluido com sucesso!')
             except ArquivosRelFinal.DoesNotExist:
                 messages.error(request, 'Documento não encontrado!')
+
+    return redirect('info_pesquisa', id)
+
+def aprovar_pesquisa(request, id):
+
+    if request.method == 'POST':
+        # MaterialTipo.objects.filter(id=item.id).update(saida_obj=None)
+        try:
+            DadosSolicPesquisa.objects.filter(id=id).update(status=True)
+            messages.success(request, 'Pesquisa aprovada com sucesso!')
+        except Exception as e:
+            messages.error(request, f'Ocorreu um erro: {e}')
 
     return redirect('info_pesquisa', id)

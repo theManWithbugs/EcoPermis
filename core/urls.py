@@ -11,6 +11,9 @@ urlpatterns = [
     path('home/', views.home, name='home'),
     path('home/pesquisas_solic/', views.pesquisas_solic, name='pesquisas_solic'),
     path('home/info_pesquisa/<str:id>/', views.info_pesquisa, name='info_pesquisa'),
+
+    #info_pesquisa only action
+    path('aprovar_pesquisa/<str:id>/', views.aprovar_pesquisa, name='aprov_pesq'),
     path('excluir_arq/<str:id>/', views.excluir_arq, name='excluir_arq'),
 
     # Forms view

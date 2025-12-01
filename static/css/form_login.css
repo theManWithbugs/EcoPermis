@@ -1,9 +1,8 @@
 body {
-  background-image: url('/static/img/fundo_login.png');
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 100vh;
+  /* fallback */
+  background-color: #f2fbf3;
+  /* gradiente suave com 3 tons verdes (leve e natural) */
+  background-image: linear-gradient(to right, #f2fbf3, #dff6e4, #cdeeca);
 }
 
 .container {

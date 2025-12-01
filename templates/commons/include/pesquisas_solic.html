@@ -7,50 +7,63 @@
 
 {% block content %}
 
-<div class="p-2">
-  <a href="#">
-    <button class="btn btn-outline-success">Aguardando aprovação</button>
-  </a>
+<div class="mb-4">
+  <h3>Atual:
+    <span class="text-primary" id="h3_title"></span>
+  </h3>
+</div>
 
-  <a href="#">
-    <button class="btn btn-outline-success">Ultimas Aprovadas</button>
-  </a>
+<div class="mb-2">
+  <button class="btn btn-secondary" onclick="filtrar_pesquisas(1)" id="aguard_aprovacao">
+    Aguardando aprovação</button>
+  <button class="btn btn-secondary" onclick="filtrar_pesquisas(2)" id="aprovados">
+    Ultimas Aprovadas</button>
 </div>
 
 {% for x in objs %}
-{% if x.status == False %}
-<a href="{% url 'info_pesquisa' x.id %}">
+{% if x.status == True %}
+<a href="{% url 'info_pesquisa' x.id %}" id="pesq_andamento">
 <div class="card mb-3">
   <div class="row g-0">
     <!-- <div class="col-md-4">
               <img src="..." class="img-fluid rounded-start" alt="...">
             </div> -->
-    <div class="col-md-8">
+    <div class="col-md-10">
+      <div class="card-body">
+        <h5 class="card-title">{{ x.acao_realizada }}</h5>
+        <p class="card-text">Tipo de solicitação: {{ x.tipo_solic }}</p>
+      </div>
+    </div>
+
+    <!-- <div class="col-md-2">
+      <div class="mt-4">
+        <button class="btn btn-success">Aprovar</button>
+      </div>
+    </div> -->
+  </div>
+</div>
+</a>
+{% else %}
+<a href="{% url 'info_pesquisa' x.id %}" id="aguardando_aprov">
+<div class="card mb-3">
+  <div class="row g-0">
+    <!-- <div class="col-md-4">
+              <img src="..." class="img-fluid rounded-start" alt="...">
+            </div> -->
+    <div class="col-md-10">
       <div class="card-body">
         <h5 class="card-title">{{ x.acao_realizada }}</h5>
         <p class="card-text">Tipo de solicitação: {{ x.tipo_solic }}</p>
       </div>
     </div>
   </div>
-  <!-- <p>
-    <button class="btn btn-primary ms-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample"
-      aria-expanded="false" aria-controls="collapseExample">
-      Informações da solicitação
-    </button>
-  </p>
-  <div class="collapse" id="collapseExample">
-    <div class="card card-body">
-      <div class="row">
-          <div class="info-card info-card-orange p-2">
-            <label>Ação Realizada</label>
-            <p>{{ x.acao_realizada }}</p>
-          </div>
-      </div>
-    </div>
-  </div> -->
 </div>
 </a>
 {% endif %}
 {% endfor %}
 
 {% endblock content %}
+
+{% block js %}
+  <script src="{% static 'js/pesquisas_solic.js' %}"></script>
+{% endblock js %}
