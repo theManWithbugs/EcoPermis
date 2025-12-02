@@ -1,0 +1,29 @@
+{% extends 'commons/base.html' %}
+{% load static %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/pesquisas_aprov.css' %}">
+{% endblock css %}
+
+{% block content %}
+
+<h3 class="text-primary mb-3">
+  <span class="text-dark">Atual:</span> (Pesquisas aguardando aprovação)</h3>
+
+<div class="mb-3">
+  <button>PENDENTE</button>
+  <button>EM-ANDAMENTO</button>
+</div>
+
+<div id="container-resultados"></div>
+
+<hr>
+<button id="btn-anterior">← Anterior</button>
+<span id="info-pagina">Página X de Y</span>
+<button id="btn-proximo">Próximo →</button>
+
+{% endblock content %}
+
+{% block js %}
+  <script src="{% static 'js/pesquisas_aprov.js' %}"></script>
+{% endblock js %}

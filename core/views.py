@@ -2,12 +2,17 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.forms import inlineformset_factory
+from django.contrib.auth import logout as auth_logout
 from django.contrib import messages
+from django.core.paginator import Paginator
+from django.forms.models import model_to_dict
+from django.http import JsonResponse
 
 #Local imports
 from core.forms import *
 from .utils import *
 
+@login_required
 def pagina_sucesso(request):
     template_name = 'commons/include/msg_pages/pagina_sucesso.html'
     return render(request, template_name)
@@ -32,6 +37,10 @@ def login_view(request):
 
     return render(request, template_name)
 
+def logoutView(request):
+    auth_logout(request)
+    return redirect('login')
+
 @login_required
 def perfil(request):
     template_name = 'auth/perfil.html'
@@ -40,6 +49,7 @@ def perfil(request):
 
     return render(request, template_name, {'objs': objs})
 
+@login_required
 def home(request):
     template_name = 'commons/home.html'
     return render(request, template_name)
@@ -107,7 +117,8 @@ def solic_pesquisa(request):
 
         if formset.is_valid():
             formset.save()
-            return redirect('pagina_sucesso')
+            messages.success(request, 'Pesquisa solicitada com sucesso!')
+            return redirect('info_pesquisa', obj_paiSaved.id)
         else:
             # formset invalid, fall through to re-render with errors
             pass
@@ -122,8 +133,9 @@ def solic_pesquisa(request):
 
     return render(request, template_name, context)
 
+@login_required
 def pesquisas_solic(request):
-    template_name = 'commons/include/pesquisas_solic.html'
+    template_name = 'commons/include/nav_pesquisas/pesquisas_solic.html'
 
     objs = DadosSolicPesquisa.objects.all().order_by('data_solicitacao')
 
@@ -133,11 +145,45 @@ def pesquisas_solic(request):
 
     return render(request, template_name, context)
 
+@login_required
+def pesquisas_aprovadas(request):
+    template_name = 'commons/include/nav_pesquisas/pesq_aprovadas.html'
+    return render(request, template_name)
+
+def api_pesq_aprov(request):
+    # Filtra apenas registros com status=False
+    dados = DadosSolicPesquisa.objects.filter(status=False)
+
+    paginator = Paginator(dados, 5)
+
+    # Número da página vindo da query string (?page=)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
+    # Converte os objetos em dicionários incluindo o campo id
+    itens_json = []
+    for item in page_obj.object_list:
+        d = model_to_dict(item)
+        d['id'] = str(item.id)  # UUID convertido para string
+        itens_json.append(d)
+
+    # Retorna os dados em formato JSON
+    return JsonResponse({
+        'items': itens_json,
+        'currentPage': page_obj.number,
+        'totalPages': paginator.num_pages,
+        'hasNext': page_obj.has_next(),
+        'hasPrevious': page_obj.has_previous(),
+    })
+
+
+@login_required
 def info_pesquisa(request, id):
     template_name = 'commons/include/info_pesquisa.html'
 
     obj = DadosSolicPesquisa.objects.filter(id=id)
     documentos = ArquivosRelFinal.objects.filter(pesquisa=obj.first())
+    membro_equip = MembroEquipe.objects.filter(pesquisa=obj.first())
 
     form = Arq_Rel_Form(request.POST or None, request.FILES or None)
 
@@ -173,12 +219,14 @@ def info_pesquisa(request, id):
         'obj': obj,
         'documentos': documentos,
         'duracao_pesq': duracao_pesq,
+        'membro_equip': membro_equip,
     }
 
     return render(request, template_name, context)
 
 #Only action
 
+@login_required
 def excluir_arq(request, id):
 
     pesquisa = DadosSolicPesquisa.objects.filter(id=id).first()
@@ -203,6 +251,7 @@ def excluir_arq(request, id):
 
     return redirect('info_pesquisa', id)
 
+@login_required
 def aprovar_pesquisa(request, id):
 
     if request.method == 'POST':

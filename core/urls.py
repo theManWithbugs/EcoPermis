@@ -7,10 +7,19 @@ urlpatterns = [
 
     path('', views.login_view, name='login'),
     path('home/login', views.perfil, name='perfil'),
+    path('logout/', views.logoutView, name='logout'),
 
     path('home/', views.home, name='home'),
+
+    #Menu pesquisas
+    #View antiga abaixo
     path('home/pesquisas_solic/', views.pesquisas_solic, name='pesquisas_solic'),
+
     path('home/info_pesquisa/<str:id>/', views.info_pesquisa, name='info_pesquisa'),
+
+    #Json above here
+    path('api/pesq_aprov_resp/', views.api_pesq_aprov, name='pesq_aprov_resp'),
+    path('home/pesquisas_andam/', views.pesquisas_aprovadas, name='pesquisas_aprov'),
 
     #info_pesquisa only action
     path('aprovar_pesquisa/<str:id>/', views.aprovar_pesquisa, name='aprov_pesq'),
