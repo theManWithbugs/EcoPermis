@@ -7,6 +7,10 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
+from django.core.mail import send_mail
+from django.core.mail import EmailMultiAlternatives
+from decouple import config
+from django.conf import settings
 
 #Local imports
 from core.forms import *
@@ -116,8 +120,56 @@ def solic_pesquisa(request):
         formset = MembroEquipeFormset(request.POST, instance=obj_paiSaved, prefix=prefix)
 
         if formset.is_valid():
-            formset.save()
-            messages.success(request, 'Pesquisa solicitada com sucesso!')
+
+            try:
+                formset.save()
+                messages.success(request, 'Pesquisa solicitada com sucesso!')
+
+                data = format_data_br(str(obj_paiSaved.data_solicitacao))
+
+                destinatarios = ['wilianaraujo407@gmail.com']  # pode adicionar outros
+                assunto = "STATUS: Pesquisa Solicitada"
+
+                # Corpo em texto simples (fallback)
+                texto_simples = "Sua pesquisa foi solicitada com sucesso!"
+
+                html_content = f"""
+                <html>
+                <body style="font-family: Arial, sans-serif; color: #333;">
+
+                    <h2 style="color:#2c3e50;">
+                        Pesquisa Solicitada com Sucesso!
+                    </h2>
+
+                    <p style="font-size: 15px;">
+                        <strong>Solicitante:</strong> {request.user.username}<br>
+                        <strong>Ação a ser realizada:</strong> {obj_paiSaved.acao_realizada}<br>
+                        <strong>Data da solicitação:</strong> {data}
+                    </p>
+
+                    <br>
+                    <p style="font-size: 14px; color:#555;">
+                        Atenciosamente,<br>
+                        <strong>SEMA - ECO Permis</strong>
+                    </p>
+
+                </body>
+                </html>
+                """
+
+                email = EmailMultiAlternatives(
+                    subject=assunto,
+                    body=texto_simples,
+                    from_email=settings.EMAIL_HOST_USER,
+                    to=destinatarios
+                )
+
+                email.attach_alternative(html_content, "text/html")
+                email.send()
+            except Exception as e:
+                messages.error(request, f'ocorreu um erro: {e}')
+
+
             return redirect('info_pesquisa', obj_paiSaved.id)
         else:
             # formset invalid, fall through to re-render with errors
@@ -133,17 +185,17 @@ def solic_pesquisa(request):
 
     return render(request, template_name, context)
 
-@login_required
-def pesquisas_solic(request):
-    template_name = 'commons/include/nav_pesquisas/pesquisas_solic.html'
+# @login_required
+# def pesquisas_solic(request):
+#     template_name = 'commons/include/nav_pesquisas/pesquisas_solic.html'
 
-    objs = DadosSolicPesquisa.objects.all().order_by('data_solicitacao')
+#     objs = DadosSolicPesquisa.objects.all().order_by('data_solicitacao')
 
-    context = {
-        'objs': objs
-    }
+#     context = {
+#         'objs': objs
+#     }
 
-    return render(request, template_name, context)
+#     return render(request, template_name, context)
 
 @login_required
 def pesquisas_aprovadas(request):
@@ -254,7 +306,6 @@ def info_pesquisa(request, id):
     return render(request, template_name, context)
 
 #Only action
-
 @login_required
 def excluir_arq(request, id):
 

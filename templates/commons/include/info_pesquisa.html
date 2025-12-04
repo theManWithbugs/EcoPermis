@@ -5,7 +5,6 @@
 {% block css %}
   <link rel="stylesheet" href="{% static 'css/info_pesquisa.css' %}">
   <link rel="stylesheet" href="{% static 'css/file_info_form.css' %}">
-  <link rel="stylesheet" href="{% static 'css/trash_can.css' %}">
 
   <link rel="stylesheet" href="{% static 'css/bg_efect_sheet.css' %}">
 {% endblock css %}
@@ -37,7 +36,7 @@
           <div class="col-auto">
             {% if request.user.is_staff and obj.0.status == False %}
               <form action="{% url 'aprov_pesq' obj.0.id %}" method="post">{% csrf_token %}
-              <button class="btn btn-light" type="submit">
+              <button class="btn btn-light" type="submit" onclick="return confirm('Tem certeza?')">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
                 <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
                 </svg>
@@ -210,9 +209,6 @@
                   <div class="card-body d-flex flex-column">
                     <!-- Ícone PDF -->
                     <div class="text-center mb-3">
-                      <!-- <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="#dc3545" class="bi bi-file-pdf-fill" viewBox="0 0 16 16">
-                        <path d="M5.523 12.424c.82-.82 2.21-.952 2.713-.937.196.01.361.03.546.055l.035.008c.27.03.646.076 1.126.076.846 0 1.221-.066 1.478-.175.228-.08.584-.246 1.11-.8.528-.558.676-1.174.686-1.5.03-.735-.063-1.724-.591-2.665-.568-.987-1.496-2.383-2.668-3.554l-.753-.75C9.747 2.829 9.142 2.221 8.848 1.97c-.684-.703-1.259-1.75-2.041-2.526-.39-.393-1.02-1.057-1.618-1.524-.598-.467-1.216-.931-1.699-1.306-.264-.204-.668-.669-.905-.905-.237-.236-.54-.557-.88-.901-.173-.179-.412-.315-.69-.315-.526 0-.934.39-.934.916 0 .323.127.667.289.978.162.311.511.868.512 1.078.013.32-.248.635-.511.873-.329.305-.612.555-.953.845-.738.684-1.441 1.335-1.44 2.26 0 .823.357 1.526.677 2.038.32.511.582.643.895.643.19 0 .701-.113.852-.143.151-.03.697.076 1.056.076.356 0 .904-.088 1.056-.143.152-.03.661-.143.852-.143.31 0 .576.132.895.643.32.512.677 1.215.677 2.038 0 .925-.702 1.576-1.44 2.26-.34.29-.624.54-.953.845-.263.238-.524.553-.511.873 0 .209.35.767.512 1.078.162.31.289.655.289.978 0 .526-.408.916-.934.916-.278 0-.517-.136-.69-.315-.34-.344-.643-.665-.88-.901-.237-.236-.54-.557-.905-.905-.482-.775-1.357-1.823-2.041-2.526-.294-.251-.899-.859-1.868-.859-.874 0-1.495.258-2.049.816-.477.478-1.564 1.594-2.668 3.554-.528.941-.621 1.93-.591 2.665.01.326.158.942.686 1.5.526.554.882.72 1.11.8.257.11.632.175 1.478.175.48 0 .856-.046 1.126-.076l.035-.008c.185-.025.35-.045.546-.055.503-.015 1.893.117 2.713.937z"/>
-                      </svg> -->
                       <img src="{% static 'img/pdf_img.png' %}" alt="" width="85px">
                     </div>
 
@@ -272,12 +268,14 @@
           <div class="row g-3">
             {% for x in membro_equip %}
               <div class="col-md-6 col-lg-4">
-                <div class="card document-card h-100 shadow-sm border-0">
-                  <div class="card-body d-flex flex-column bg-light border border-1" style="font-family: Arial, Helvetica, sans-serif;">
-                    <span><strong>Nome:</strong> {{ x.nome }}</span>
-                    <span><strong>RG:</strong> {{ x.rg }}</span>
-                    <span><strong>CPF:</strong> {{ x.cpf }}</span>
-                    <span><strong>Instituição: </strong>{{ x.instituicao }}</span>
+                <div class="card text-dark bg-light mb-3" style="max-width: 18rem;">
+                  <div class="card-header"></div>
+                  <div class="card-body">
+                    <h5 class="card-title">{{ x.nome }}</h5>
+                    <strong>RG:</strong> {{ x.rg }}<br>
+                    <strong>Instituição: </strong>{{ x.instituicao }}<br>
+                    <strong>CPF:</strong> {{ x.cpf }}<br>
+                    <strong>Instituição: </strong>{{ x.instituicao }}<br>
                   </div>
                 </div>
               </div>

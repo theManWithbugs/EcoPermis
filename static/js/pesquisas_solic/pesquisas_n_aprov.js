@@ -44,7 +44,7 @@ function renderizarItens(items) {
     var str_data = item.data_solicitacao;
     str_data = str_data.split('-');
 
-    var data_format = [`${str_data[2]}-${str_data[1]}-${str_data[0]}`];
+    var data_format = [`${str_data[2]}/${str_data[1]}/${str_data[0]}`];
 
     // Data da solicitação
     const data = document.createElement('p');

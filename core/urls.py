@@ -13,7 +13,7 @@ urlpatterns = [
 
     #Menu pesquisas
     #View antiga abaixo
-    path('home/pesquisas_solic/', views.pesquisas_solic, name='pesquisas_solic'),
+    # path('home/pesquisas_solic/', views.pesquisas_solic, name='pesquisas_solic'),
 
     path('home/info_pesquisa/<str:id>/', views.info_pesquisa, name='info_pesquisa'),
 

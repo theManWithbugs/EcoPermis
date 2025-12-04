@@ -1,6 +1,13 @@
 from django.db import models
 from .models import *
 
+def format_data_br(data):
+  data = data.split('-')
+
+  data = f"{data[2]}/{data[1]}/{data[0]}"
+
+  return data
+
 def check_number(phone):
   DDD = str(f"({phone[:2]})")
   number = str(phone[2:])

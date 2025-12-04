@@ -2,13 +2,13 @@
 {% load static %}
 
 {% block css %}
-  <link rel="stylesheet" href="{% static 'css/pesquisas.css' %}">
+  <link rel="stylesheet" href="{% static 'css/pesquisas_solic/pesquisas.css' %}">
 {% endblock css %}
 
 {% block content %}
 
 <h3 class="text-primary mb-3">
-  <span class="text-dark">Atual:</span> (Pesquisas Aprovadas)</h3>
+  <span class="text-dark">Atual:</span> (Pesquisas aprovadas)</h3>
 
 {% include 'commons/include/nav_pesquisas/link_menu.html' %}
 <div id="container-resultados"></div>
