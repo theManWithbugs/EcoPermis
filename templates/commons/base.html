@@ -23,7 +23,7 @@
     </a>
 
     {% if request.user %}
-      <div class="ms-auto bg-white rounded" style="padding-right: 15px; padding-left: 15px;">
+      <div class="ms-auto bg-light shadow-sm" style="padding-right: 15px; padding-left: 15px;">
         <a href="{% url 'perfil' %}" style="text-decoration: none; color: black;">
           <img src="{% static 'img/user_img.png' %}" width="45px">
           {{ request.user.username }}

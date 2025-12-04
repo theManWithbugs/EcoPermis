@@ -1,5 +1,5 @@
 let paginaAtual = 1;
-const urlAPI = '/api/pesq_aprov_resp/';
+const urlAPI = '/api/pesq_n_aprov_resp/';
 const container = document.getElementById('container-resultados');
 const infoPaginaSpan = document.getElementById('info-pagina');
 const btnAnterior = document.getElementById('btn-anterior');
@@ -17,6 +17,8 @@ function carregarPagina(numeroDaPagina) {
 
       paginaAtual = data.currentPage;
       infoPaginaSpan.textContent = `Página ${data.currentPage} de ${data.totalPages}`;
+
+      //caso não tenha pagina anterior ou proxima, desabilita o botão
       btnAnterior.disabled = !data.hasPrevious;
       btnProximo.disabled = !data.hasNext;
     })
@@ -32,7 +34,6 @@ function renderizarItens(items) {
     // Cria um div para o card
     const card = document.createElement('div');
     card.className = 'card_items'; // Adiciona classe CSS para estilização
-    // card.style.marginBottom = '15px';
 
     // Título da ação
     const titulo = document.createElement('h5');
@@ -44,7 +45,6 @@ function renderizarItens(items) {
     str_data = str_data.split('-');
 
     var data_format = [`${str_data[2]}-${str_data[1]}-${str_data[0]}`];
-    console.log(data_format);
 
     // Data da solicitação
     const data = document.createElement('p');

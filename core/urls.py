@@ -17,9 +17,13 @@ urlpatterns = [
 
     path('home/info_pesquisa/<str:id>/', views.info_pesquisa, name='info_pesquisa'),
 
-    #Json above here
-    path('api/pesq_aprov_resp/', views.api_pesq_aprov, name='pesq_aprov_resp'),
+    #Views that needs json response
     path('home/pesquisas_andam/', views.pesquisas_aprovadas, name='pesquisas_aprov'),
+    path('home/pesquisas_n_aprov/', views.pesquisas_n_aprovadas, name='pesquisas_n_aprov'),
+
+    #Json responses above here
+    path('api/pesq_aprov_resp/', views.api_pesq_aprov, name='pesq_aprov_resp'),
+    path('api/pesq_n_aprov_resp/', views.api_pesq_n_aprovadas, name='pesq_n_aprov_resp'),
 
     #info_pesquisa only action
     path('aprovar_pesquisa/<str:id>/', views.aprovar_pesquisa, name='aprov_pesq'),

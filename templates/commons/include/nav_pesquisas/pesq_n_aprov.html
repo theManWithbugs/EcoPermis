@@ -8,7 +8,7 @@
 {% block content %}
 
 <h3 class="text-primary mb-3">
-  <span class="text-dark">Atual:</span> (Pesquisas Aprovadas)</h3>
+  <span class="text-dark">Atual:</span> (Pesquisas aguardando aprovação)</h3>
 
 {% include 'commons/include/nav_pesquisas/link_menu.html' %}
 <div id="container-resultados"></div>
@@ -21,5 +21,5 @@
 {% endblock content %}
 
 {% block js %}
-  <script src="{% static 'js/pesquisas_solic/pesquisas_aprov.js' %}"></script>
+  <script src="{% static 'js/pesquisas_solic/pesquisas_n_aprov.js' %}"></script>
 {% endblock js %}

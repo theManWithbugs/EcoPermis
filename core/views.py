@@ -150,9 +150,14 @@ def pesquisas_aprovadas(request):
     template_name = 'commons/include/nav_pesquisas/pesq_aprovadas.html'
     return render(request, template_name)
 
+@login_required
+def pesquisas_n_aprovadas(request):
+    template_name = 'commons/include/nav_pesquisas/pesq_n_aprov.html'
+    return render(request, template_name)
+
 def api_pesq_aprov(request):
     # Filtra apenas registros com status=False
-    dados = DadosSolicPesquisa.objects.filter(status=False)
+    dados = DadosSolicPesquisa.objects.filter(status=True)
 
     paginator = Paginator(dados, 5)
 
@@ -176,6 +181,30 @@ def api_pesq_aprov(request):
         'hasPrevious': page_obj.has_previous(),
     })
 
+def api_pesq_n_aprovadas(request):
+
+    #Dessa vez filtra pelo items com status = false
+    dados = DadosSolicPesquisa.objects.filter(status=False)
+
+    paginator = Paginator(dados, 5)
+
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
+    itens_json = []
+    for item in page_obj.object_list:
+        d = model_to_dict(item)
+        d['id'] = str(item.id)
+        itens_json.append(d)
+
+    # Retorna os dados em formato JSON
+    return JsonResponse({
+        'items': itens_json,
+        'currentPage': page_obj.number,
+        'totalPages': paginator.num_pages,
+        'hasNext': page_obj.has_next(),
+        'hasPrevious': page_obj.has_previous(),
+    })
 
 @login_required
 def info_pesquisa(request, id):
