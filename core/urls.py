@@ -25,6 +25,8 @@ urlpatterns = [
     path('api/pesq_aprov_resp/', views.api_pesq_aprov, name='pesq_aprov_resp'),
     path('api/pesq_n_aprov_resp/', views.api_pesq_n_aprovadas, name='pesq_n_aprov_resp'),
 
+    path('home/minhas_solic/', views.minhas_solic, name='minhas_solic'),
+
     #info_pesquisa only action
     path('aprovar_pesquisa/<str:id>/', views.aprovar_pesquisa, name='aprov_pesq'),
     path('excluir_arq/<str:id>/', views.excluir_arq, name='excluir_arq'),

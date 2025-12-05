@@ -11,10 +11,14 @@ from django.core.mail import send_mail
 from django.core.mail import EmailMultiAlternatives
 from decouple import config
 from django.conf import settings
+from django.contrib.auth.decorators import user_passes_test
 
 #Local imports
 from core.forms import *
 from .utils import *
+
+def is_staff(user):
+    return user.is_staff
 
 @login_required
 def pagina_sucesso(request):
@@ -53,10 +57,16 @@ def perfil(request):
 
     return render(request, template_name, {'objs': objs})
 
+#------------------------------------------------------------------------#
+#------------------------------------------------------------------------#
+
 @login_required
 def home(request):
     template_name = 'commons/home.html'
     return render(request, template_name)
+
+#------------------------------------------------------------------------#
+#------------------------------------------------------------------------#
 
 @login_required
 def dados_pessoais(request):
@@ -128,7 +138,7 @@ def solic_pesquisa(request):
                 data = format_data_br(str(obj_paiSaved.data_solicitacao))
 
                 destinatarios = ['wilianaraujo407@gmail.com']  # pode adicionar outros
-                assunto = "STATUS: Pesquisa Solicitada"
+                assunto = "STATUS: Aguardando aprovação"
 
                 # Corpo em texto simples (fallback)
                 texto_simples = "Sua pesquisa foi solicitada com sucesso!"
@@ -332,6 +342,7 @@ def excluir_arq(request, id):
     return redirect('info_pesquisa', id)
 
 @login_required
+@user_passes_test(is_staff, login_url='permission_denied')
 def aprovar_pesquisa(request, id):
 
     if request.method == 'POST':
@@ -343,3 +354,8 @@ def aprovar_pesquisa(request, id):
             messages.error(request, f'Ocorreu um erro: {e}')
 
     return redirect('info_pesquisa', id)
+
+@login_required
+def minhas_solic(request):
+    template_name = 'commons/include/nav_pesquisas/minhas_solic.html'
+    return render(request, template_name)

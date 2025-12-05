@@ -1,4 +1,4 @@
-{% extends 'commons/base.html' %}
+{% extends 'commons/include/nav_user.html' %}
 {% load static %}
 
 {% block css %}
@@ -7,7 +7,7 @@
 
 {% block content %}
 
-<div class="container mt-5 mb-5">
+<div class="container">
     <div class="mb-4">
         <h2 class="fw-bold text-success">Solicitação de Pesquisa</h2>
         <p class="text-muted">Preencha os campos abaixo para registrar sua solicitação de pesquisa</p>
@@ -22,7 +22,7 @@
         </div>
         {% endif %}
 
-        <div class="row mb-3">
+        <div class="row mb-3 main_form">
             <div class="col-md-12">
                 {{ form.acao_realizada.label_tag }}
                 {{ form.acao_realizada }}
@@ -32,7 +32,7 @@
             </div>
         </div>
 
-        <div class="row mb-3">
+        <div class="row mb-3 main_form">
             <div class="col-md-12">
                 {{ form.unidade_cons.label_tag }}
                 {{ form.unidade_cons }}
@@ -42,7 +42,7 @@
             </div>
         </div>
 
-        <div class="row mb-3">
+        <div class="row mb-3 main_form">
             <div class="col-md-4">
                 {{ form.tipo_solic.label_tag }}
                 {{ form.tipo_solic }}
@@ -51,7 +51,7 @@
                 {% endfor %}
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-4 main_form">
                 {{ form.foto.label_tag }}
                 {{ form.foto }}
                 {% for error in form.foto.errors %}
@@ -59,7 +59,7 @@
                 {% endfor %}
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-4 main_form">
                 {{ form.licenca_inst.label_tag }}
                 {{ form.licenca_inst }}
                 {% for error in form.licenca_inst.errors %}
@@ -68,7 +68,7 @@
             </div>
         </div>
 
-        <div class="row mb-3">
+        <div class="row mb-3 main_form">
             <div class="col-md-12">
                 {{ form.periodo_dur.label_tag }}
                 {{ form.periodo_dur }}
@@ -78,7 +78,7 @@
             </div>
         </div>
 
-        <div class="row mb-3">
+        <div class="row mb-3 main_form">
             <div class="col-md-6">
                 {{ form.retorno_comuni.label_tag }}
                 {{ form.retorno_comuni }}
@@ -96,7 +96,7 @@
             </div>
         </div>
 
-        <div class="row mb-3">
+        <div class="row mb-3 main_form">
             <div class="col-md-6">
                 {{ form.inicio_atividade.label_tag }}
                 {{ form.inicio_atividade }}
@@ -125,7 +125,11 @@
         </div>
 
         <hr>
-        <h5>Membros da Equipe</h5>
+        <div class="d-flex justify-content-center rounded mb-1">
+            <div class="bg-light p-1 rounded text-center" style="width: 50%">
+                <h5>Membros da Equipe</h5>
+            </div>
+        </div>
 
         <div class="container">
             <div id="membros_formset">
@@ -184,7 +188,7 @@
             </div>
         </div>
 
-        <div class="text-center mt-3">
+        <div class="text-center">
             <button type="submit" class="btn btn-success">Salvar</button>
         </div>
     </form>

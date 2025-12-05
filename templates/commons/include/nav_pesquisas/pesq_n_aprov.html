@@ -1,22 +1,40 @@
-{% extends 'commons/base.html' %}
+{% extends 'commons/include/nav_user.html' %}
 {% load static %}
 
 {% block css %}
   <link rel="stylesheet" href="{% static 'css/pesquisas_solic/pesquisas.css' %}">
+  <link rel="stylesheet" href="{% static 'css/buttons/btn_paginator.css' %}">
 {% endblock css %}
 
 {% block content %}
 
-<h3 class="text-primary mb-3">
+<h3 class="text-success mb-3">
   <span class="text-dark">Atual:</span> (Pesquisas aguardando aprovação)</h3>
 
 {% include 'commons/include/nav_pesquisas/link_menu.html' %}
 <div id="container-resultados"></div>
 
 <hr>
-<button id="btn-anterior">← Anterior</button>
+<!-- <button id="btn-anterior">← Anterior</button>
 <span id="info-pagina">Página X de Y</span>
-<button id="btn-proximo">Próximo →</button>
+<button id="btn-proximo">Próximo →</button> -->
+<div class="button-container" id="btn-anterior">
+  <button class="button-3d">
+    <div class="button-top">
+      <span class="material-icons">❮</span>
+    </div>
+    <div class="button-bottom"></div>
+    <div class="button-base"></div>
+  </button>
+  <span id="info-pagina" class="mt-4">Página X de Y</span>
+  <button class="button-3d" id="btn-proximo">
+    <div class="button-top">
+      <span class="material-icons">❯</span>
+    </div>
+    <div class="button-bottom"></div>
+    <div class="button-base"></div>
+  </button>
+</div>
 
 {% endblock content %}
 

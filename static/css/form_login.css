@@ -1,8 +1,8 @@
 body {
   /* fallback */
-  background-color: #f2fbf3;
+  /* background-color: #f2fbf3; */
   /* gradiente suave com 3 tons verdes (leve e natural) */
-  background-image: linear-gradient(to right, #f2fbf3, #dff6e4, #cdeeca);
+  background-image: linear-gradient(to bottom, #0009, transparent);
 }
 
 .container {
