@@ -1,7 +1,33 @@
-{% extends 'commons/base.html' %}
+{% extends 'commons/include/nav_user.html' %}
 {% load static %}
 
 {% block content %}
 
+{% if quant_pesq > 1 %}
+  <h5>({{ quant_pesq }} pesquisas localizadas)</h5>
+{% else %}
+  <h5>({{ quant_pesq }} pesquisa localizada)</h5>
+{% endif %}
+
+{% for x in pesquisas %}
+  {% if pesquisas %}
+    <div class="list-group">
+      <a href="{% url 'info_pesquisa' x.id %}" class="list-group-item list-group-item-action">
+        <div class="d-flex w-100 justify-content-between">
+          <h5 class="mb-1">ATUAÇÃO: {{ x.area_atuacao }}</h5>
+          <small class="text-muted">{{ x.data_solicitacao }}</small>
+        </div>
+        <p class="mb-1">{{ x.acao_realizada }}</p>
+        <small class="text-muted">
+          {% if x.status == False %}
+            AGUARDANDO/FINALIZADO
+          {% else %}
+            EM-ANDAMENTO
+          {% endif %}
+        </small>
+      </a>
+    </div>
+  {% endif %}
+{% endfor %}
 
 {% endblock content %}

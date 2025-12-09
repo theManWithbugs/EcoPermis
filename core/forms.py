@@ -19,7 +19,7 @@ class DadosPesqForm(forms.ModelForm):
   class Meta:
     model = DadosSolicPesquisa
     fields = '__all__'
-    exclude = ['data_solicitacao', 'status']
+    exclude = ['user_solic', 'data_solicitacao', 'status']
     widgets = {
         'rel_final': forms.Textarea(attrs={
           'class': 'form-control form-control-sm',

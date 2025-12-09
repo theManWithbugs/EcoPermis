@@ -17,6 +17,10 @@ from django.contrib.auth.decorators import user_passes_test
 from core.forms import *
 from .utils import *
 
+#Debug the code
+# messages.error(request, f"Erros: {form.errors}")
+# print((request, f"Erros: {form.errors}"))
+
 def is_staff(user):
     return user.is_staff
 
@@ -99,6 +103,8 @@ def dados_pessoais(request):
 def solic_pesquisa(request):
     template_name = 'commons/include/solic_pesquisa.html'
 
+    user = request.user
+
     # dados_pessoais = DadosPessoais.objects.filter(usuario=request.user)
     MembroEquipeFormset = inlineformset_factory(
         DadosSolicPesquisa, MembroEquipe, form=MembroEquipeForm,
@@ -125,7 +131,9 @@ def solic_pesquisa(request):
     # POST
     form = DadosPesqForm(request.POST)
     if form.is_valid():
-        obj_paiSaved = form.save()
+        obj_paiSaved = form.save(commit=False)
+        obj_paiSaved.user_solic = user
+        obj_paiSaved.save()
 
         formset = MembroEquipeFormset(request.POST, instance=obj_paiSaved, prefix=prefix)
 
@@ -187,6 +195,7 @@ def solic_pesquisa(request):
     else:
         # parent form invalid; bind formset to POST so user entries are preserved
         formset = MembroEquipeFormset(request.POST, prefix=prefix)
+        print((request, f"Erros: {form.errors}"))
 
     context = {
         'form': form,
@@ -246,7 +255,7 @@ def api_pesq_aprov(request):
 def api_pesq_n_aprovadas(request):
 
     #Dessa vez filtra pelo items com status = false
-    dados = DadosSolicPesquisa.objects.filter(status=False)
+    dados = DadosSolicPesquisa.objects.filter(status=False).order_by('data_solicitacao')
 
     paginator = Paginator(dados, 5)
 
@@ -358,4 +367,16 @@ def aprovar_pesquisa(request, id):
 @login_required
 def minhas_solic(request):
     template_name = 'commons/include/nav_pesquisas/minhas_solic.html'
-    return render(request, template_name)
+
+    user = request.user.id
+    pesq_user = DadosSolicPesquisa.objects.filter(user_solic=user)
+
+    contador = 0
+    for x in pesq_user: contador+=1
+
+    context = {
+        'pesquisas': pesq_user,
+        'quant_pesq': contador
+    }
+
+    return render(request, template_name, context)

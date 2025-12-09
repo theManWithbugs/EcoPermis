@@ -1,23 +1,23 @@
 YES_OR_NOT = (
-  ('', 'Selecione'),
+  ('NA', 'Selecione'),
   ('SIM', 'Sim'),
   ('NAO', 'Não')
 )
 
 TIPO_SOLIC = (
-  ('', 'Selecione'),
+  ('NA', 'Selecione'),
   ('AUTORIZAÇÃO', 'Autorização'),
   ('RENOVACAO', 'Renovação')
 )
 
 SEXO = (
-  ('', 'Selecione'),
+  ('NA', 'Selecione'),
   ('M', 'Masculino'),
   ('F', 'Feminino')
 )
 
 ESTADOS_BRASIL_CHOICES = [
-  ('', 'Selecione'),
+  ('NA', 'Selecione'),
   ('AC', 'Acre'),
   ('AL', 'Alagoas'),
   ('AP', 'Amapá'),
@@ -48,7 +48,7 @@ ESTADOS_BRASIL_CHOICES = [
 ]
 
 MUNICIPIOS_CHOICES = [
-  ('', 'Selecione'),
+  ('NA', 'Selecione'),
   ('ACRELANDIA', 'Acrelândia'),
   ('ASSIS_BRASIL', 'Assis Brasil'),
   ('BRASILEIA', 'Brasiléia'),
@@ -74,7 +74,7 @@ MUNICIPIOS_CHOICES = [
 ]
 
 CHOICES_AREA_ATUACAO = [
-  ('', 'Selecione'),
+  ('NA', 'Selecione'),
   ('FAUNA', 'Fauna'),
   ('FLORA', 'Flora'),
   ('ECOLOGIA', 'Ecologia'),

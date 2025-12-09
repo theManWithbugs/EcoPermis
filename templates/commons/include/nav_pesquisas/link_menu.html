@@ -1,9 +1,47 @@
 {% load static %}
 
-<div class="mb-3">
-  <a href="{% url 'pesquisas_n_aprov' %}">
-    <button>pendente</button></a>
+<script>
+  function current_Button(value) {
+    const btn_pendente = document.getElementById('pendente');
+    const btn_em_andamento = document.getElementById('btn_andamento');
 
-  <a href="{% url 'pesquisas_aprov' %}">
-    <button>em-andamento</button></a>
+    switch (value) {
+      case 1:
+        btn_pendente.style.borderColor = "blue";
+        btn_em_andamento.style.borderColor = "transparent";
+        break;
+      case 2:
+        btn_pendente.style.borderColor = "transparent";
+        btn_em_andamento.style.borderColor = "blue";
+        break;
+      default:
+        break;
+    }
+  }
+
+  function initializeHighlight() {
+    const currentPath = window.location.pathname;
+    if (currentPath.includes('pesquisas_n_aprov')) {
+      current_Button(1);
+    } else if (currentPath.includes('pesquisas_andam')) {
+      current_Button(2);
+    }
+  }
+
+  // Executa a inicialização quando a página carrega
+  document.addEventListener('DOMContentLoaded', initializeHighlight);
+</script>
+
+<div class="mb-3">
+  <a href="{% url 'pesquisas_n_aprov' %}" style="text-decoration: none;">
+    <button class="btn btn-secondary" onclick="current_Button(1)" id="pendente">
+      pendente
+    </button>
+  </a>
+
+  <a href="{% url 'pesquisas_aprov' %}" style="text-decoration: none;">
+    <button class="btn btn-secondary" onclick="current_Button(2)" id="btn_andamento">
+      em-andamento
+    </button>
+  </a>
 </div>

@@ -7,16 +7,14 @@ urlpatterns = [
 
     path('', views.login_view, name='login'),
     path('home/login', views.perfil, name='perfil'),
+
     path('logout/', views.logoutView, name='logout'),
 
     path('home/', views.home, name='home'),
 
-    #Menu pesquisas
-    #View antiga abaixo
-    # path('home/pesquisas_solic/', views.pesquisas_solic, name='pesquisas_solic'),
-
     path('home/info_pesquisa/<str:id>/', views.info_pesquisa, name='info_pesquisa'),
 
+    #--------------------------------------------------------------------------------------#
     #Views that needs json response
     path('home/pesquisas_andam/', views.pesquisas_aprovadas, name='pesquisas_aprov'),
     path('home/pesquisas_n_aprov/', views.pesquisas_n_aprovadas, name='pesquisas_n_aprov'),
@@ -24,6 +22,7 @@ urlpatterns = [
     #Json responses above here
     path('api/pesq_aprov_resp/', views.api_pesq_aprov, name='pesq_aprov_resp'),
     path('api/pesq_n_aprov_resp/', views.api_pesq_n_aprovadas, name='pesq_n_aprov_resp'),
+    #--------------------------------------------------------------------------------------#
 
     path('home/minhas_solic/', views.minhas_solic, name='minhas_solic'),
 

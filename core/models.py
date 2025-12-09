@@ -18,13 +18,13 @@ class User(AbstractUser):
 
 class DadosPessoais(models.Model):
     usuario = models.ForeignKey(
-        User, on_delete=models.CASCADE, to_field='id', related_name='usuario')
+        User, on_delete=models.CASCADE, related_name='usuario')
     nome = models.CharField(blank=False, null=False, max_length=80)
-    sexo = models.CharField(choices=SEXO, blank=False, null=False)
+    sexo = models.CharField(choices=SEXO, blank=False, null=False, max_length=10)
     estado = models.CharField(
-        choices=ESTADOS_BRASIL_CHOICES, blank=False, null=False)
+        choices=ESTADOS_BRASIL_CHOICES, blank=False, null=False, max_length=20)
     municipio = models.CharField(
-        choices=MUNICIPIOS_CHOICES, blank=False, null=False)
+        choices=MUNICIPIOS_CHOICES, blank=False, null=False, max_length=30)
     endereco = models.CharField(
         blank=False, null=False, max_length=120, verbose_name='Endereço')
     celular = models.CharField(blank=False, null=False, validators=[
@@ -35,13 +35,15 @@ class DadosPessoais(models.Model):
         blank=False, null=False, max_length=30, verbose_name='Orgão emissor(RG)')
     cpf = models.CharField(blank=False, null=False, validators=[
                            validador_cpf], max_length=11, verbose_name='CPF')
-    telefone_fixo = models.CharField(blank=True, null=True, max_length=8)
+    # telefone_fixo = models.CharField(blank=True, null=True, max_length=8, default='N/A')
+    telefone_fixo = models.CharField(blank=True, null=True, max_length=8, default='NA')
+
     cep = models.CharField(blank=False, null=False,
                            max_length=8, verbose_name='CEP')
     profis = models.CharField(blank=False, null=False,
                               max_length=30, verbose_name='Profissão/Ocupação')
     email = models.CharField(blank=True, null=True,
-                             default='N/A', max_length=80)
+                             default='NA', max_length=80)
 
     def __str__(self):
         return f"{self.nome}"
@@ -67,6 +69,8 @@ class DadosPessoais(models.Model):
 class DadosSolicPesquisa(models.Model):
     id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)
+    user_solic = models.ForeignKey(User, on_delete=models.CASCADE)
+
     data_solicitacao = models.DateField(default=timezone.localdate)
 
     acao_realizada = models.CharField(
@@ -77,29 +81,26 @@ class DadosSolicPesquisa(models.Model):
                                     verbose_name='Unidade(s) de conservação onde será(ão) realizada(s) a atividade')
 
     tipo_solic = models.CharField(
-        choices=TIPO_SOLIC, blank=False, null=False, verbose_name='Tipo de solicitação')
+        choices=TIPO_SOLIC, blank=False, null=False, verbose_name='Tipo de solicitação', max_length=20)
 
     # Esse campo deve permitir anexar documentos
     # rel_final = models.CharField(
     #     blank=False, null=False, max_length=500, verbose_name='Relatorio final de resultados')
 
     foto = models.CharField(choices=YES_OR_NOT, blank=False,
-                            null=False, verbose_name='Fotografia e imagens da UC?')
+                            null=False, verbose_name='Fotografia e imagens da UC?', max_length=3)
 
     licenca_inst = models.CharField(
-        choices=YES_OR_NOT, blank=False, null=False, verbose_name='Licença de instituição responsavel?')
-
-    # periodo_dur = models.CharField(
-    #     blank=False, null=False, verbose_name='Periodo de duração da atividade')
+        choices=YES_OR_NOT, blank=False, null=False, verbose_name='Licença de instituição responsavel?', max_length=3)
 
     inicio_atividade = models.DateField(default=timezone.localdate)
     final_atividade = models.DateField(default=timezone.localdate)
 
     retorno_comuni = models.CharField(
-        choices=YES_OR_NOT, blank=False, null=False, verbose_name='Retorno para a comunidade')
+        choices=YES_OR_NOT, blank=False, null=False, verbose_name='Retorno para a comunidade', max_length=3)
 
     area_atuacao = models.CharField(
-        choices=CHOICES_AREA_ATUACAO, blank=False, null=False, verbose_name='Aréa de atuação')
+        choices=CHOICES_AREA_ATUACAO, blank=False, null=False, verbose_name='Aréa de atuação', max_length=100)
 
     status = models.BooleanField(default=False)
 
@@ -111,22 +112,21 @@ class DadosSolicPesquisa(models.Model):
             value = getattr(self, field.name)
             if isinstance(field, models.CharField) and value is not None:
                 setattr(self, field.name, value.upper())
-            super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     class Meta:
         db_table = "solic_pesquisa"
 
-
 class MembroEquipe(models.Model):
     pesquisa = models.ForeignKey(
-        DadosSolicPesquisa, on_delete=models.CASCADE, to_field='id', related_name='pesquisa')
+        DadosSolicPesquisa, on_delete=models.CASCADE, related_name='pesquisa')
     nome = models.CharField(blank=False, null=False, max_length=80)
     rg = models.CharField(blank=False, null=False,
                           max_length=11, verbose_name='RG')
     cpf = models.CharField(blank=False, null=False, validators=[
                            validador_cpf], max_length=11, verbose_name='CPF')
     instituicao = models.CharField(
-        blank=False, null=False, verbose_name='Instiuições')
+        blank=False, null=False, verbose_name='Instiuições', max_length=80)
 
     def __str__(self):
         return f"{self.nome}"
@@ -139,7 +139,7 @@ def get_upload_path(instance, filename):
 
 class ArquivosRelFinal(models.Model):
     pesquisa = models.ForeignKey(
-        DadosSolicPesquisa, on_delete=models.CASCADE, to_field='id', related_name='arq_pesquisa')
+        DadosSolicPesquisa, on_delete=models.CASCADE, related_name='arq_pesquisa')
     documento = models.FileField(upload_to=get_upload_path)
     upado_em = models.DateTimeField(default=timezone.now)
 

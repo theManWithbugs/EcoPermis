@@ -8,10 +8,10 @@
     <div class="card-header">
       <div class="row">
         <div class="col-md-auto">
-          <h4 class="mb-0">Bem-vindo, {{ request.user.username }} 👋</h4>
+          <h4 class="mb-0">{{ request.user.username }}</h4>
         </div>
 
-        <div class="col-md-auto ms-auto">
+        <!-- <div class="col-md-auto ms-auto">
           <a href="{% url 'logout' %}">
             <button class="Btn_logout bg-danger">
                 <div class="sign">
@@ -26,7 +26,7 @@
                 <div class="text">Sair</div>
             </button>
           </a>
-        </div>
+        </div> -->
       </div>
     </div>
     <div class="card-body">
@@ -40,7 +40,13 @@
             </tr>
             <tr>
               <th scope="row">Sexo</th>
-              <td>{{ x.sexo }}</td>
+              <td>
+                {% if x.sexo == 'M' %}
+                  Masculino
+                {% else %}
+                  Feminino
+                {% endif %}
+              </td>
             </tr>
             <tr>
               <th scope="row">Estado</th>
@@ -72,7 +78,13 @@
             </tr>
             <tr>
               <th scope="row">Telefone Fixo</th>
-              <td>{{ x.telefone_fixo }}</td>
+              <td>
+                {% if x.telefone_fixo %}
+                  {{ x.telefone_fixo }}
+                {% else %}
+                  não informado
+                {% endif %}
+              </td>
             </tr>
             <tr>
               <th scope="row">CEP</th>

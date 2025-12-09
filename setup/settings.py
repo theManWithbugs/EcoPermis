@@ -21,6 +21,7 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default=[], cast=Csv())
 # Application definition
 INSTALLED_APPS = [
     'core',
+    'django_q',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -28,6 +29,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+Q_CLUSTER = {
+    "name": "cluster-pesquisa",
+    "workers": 4,
+    "scheduler": True,
+    "retry": 180,    # maior
+    "timeout": 90,   # menor
+    "queue_limit": 50,
+    "bulk": 10,
+    "orm": "default",
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

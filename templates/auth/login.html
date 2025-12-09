@@ -2,17 +2,22 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/bs5/bootstrap.min.css' %}">
   <link rel="stylesheet" href="{% static 'css/form_login.css' %}">
+  <link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
   <link rel="shortcut icon" href="favicon.png" type="image/png">
-  <title>Title</title>
+  <title>LOGIN</title>
 </head>
 
 <body>
 
-  {% include 'commons/include/msg_pages/alert_error_message.html' %}
+  {% if messages %}
+    <div class="d-flex justify-content-center animate__animated animate__fadeInDown">
+      <div class="w-50">{% include 'commons/include/msg_pages/alert_error_message.html' %}</div>
+    </div>
+  {% endif %}
 
-  <div class="d-flex justify-content-center mt-5">
+  <div class="d-flex justify-content-center mt-4">
     <div class="container">
       <div class="heading">
         <img src="{% static 'img/eoc_pers_icone_sfundo.png' %}" width="135px">
@@ -38,9 +43,9 @@
         <span class="forgot-password"><a href="#">Esqueceu a senha ?</a></span>
         <input value="Entrar" type="submit" class="login-button" />
       </form>
-      <div class="social-account-container">
+      <!-- <div class="social-account-container">
         <span class="title">Or Sign in with</span>
-        <!-- <div class="social-accounts">
+        <div class="social-accounts">
           <button class="social-button google">
             <svg
               viewBox="0 0 488 512"
@@ -77,11 +82,17 @@
               ></path>
             </svg>
           </button>
-        </div> -->
-      </div>
-      <span class="agreement"><a href="#">Learn user licence agreement</a></span>
+        </div>
+      </div> -->
+      <!-- <span class="agreement"><a href="#">Learn user licence agreement</a></span> -->
     </div>
   </div>
+
+  <footer class="fixed-bottom">
+    <div class="d-flex justify-content-center fs-5" style="font-family: 'Times New Roman', Times, serif">
+      <span class="text-success">SEMA-AC</span>(DEV-Wilian)
+    </div>
+  </footer>
 
 </body>
 
