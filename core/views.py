@@ -204,18 +204,6 @@ def solic_pesquisa(request):
 
     return render(request, template_name, context)
 
-# @login_required
-# def pesquisas_solic(request):
-#     template_name = 'commons/include/nav_pesquisas/pesquisas_solic.html'
-
-#     objs = DadosSolicPesquisa.objects.all().order_by('data_solicitacao')
-
-#     context = {
-#         'objs': objs
-#     }
-
-#     return render(request, template_name, context)
-
 @login_required
 def pesquisas_aprovadas(request):
     template_name = 'commons/include/nav_pesquisas/pesq_aprovadas.html'

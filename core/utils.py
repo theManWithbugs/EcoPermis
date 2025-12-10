@@ -50,3 +50,14 @@ def calcular_data(data_inicio, data_final):
     duracao = f"Duração de: {qnt_anos} {ano_txt} e {qnt_meses} {mes_txt}"
 
   return duracao
+
+def msg_confirmacao_pesq(nome, rg, cpf, acao_realizada, unidade_cons):
+  texto = """ Eu, {nome}, portador do RG n°{rg} e CPF n° {cpf}, pesquisador responsável pela execução do projeto intitulado {acao_realizada} a ser realizado na Unidade de Conservação {unidade_cons} assumo o compromisso
+  junto ao Departamento de Unidades de conservação/Secretaria de Estado do Meio Ambiente (DEUC/
+  SEMA) de cumprir as obrigações abaixo listadas:
+  1. Repassar informações à DEUC/SEMA sobre o referido projeto de minha responsabilidade, na forma de tese, dissertação, monografia, artigo, relatório parcial, relatório final, registro fotográfico, entre outros, conforme compromisso assumido no ato da solicitação, sob pena das sanções
+  previstas em lei;
+  2. Entregar à DEUC/SEMA os relatórios parciais e o relatório final, contendo os resultados da pesquisa, em meio impresso e digital, no prazo de 60 (sessenta) dias após conclusão do projeto;
+  3. Encaminhar à DEUC/SEMA a declaração do responsável pela coleção científica na qual foi depositado o material coletado durante a pesquisa.
+  4. Todos os membros da equipe devem assinar o termo de boas práticas, concordando com todos os termos de boa conduta dentro da Unidade de Conservação a qual será realizada a pesquisa científica. """
+  pass

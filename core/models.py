@@ -35,7 +35,6 @@ class DadosPessoais(models.Model):
         blank=False, null=False, max_length=30, verbose_name='Orgão emissor(RG)')
     cpf = models.CharField(blank=False, null=False, validators=[
                            validador_cpf], max_length=11, verbose_name='CPF')
-    # telefone_fixo = models.CharField(blank=True, null=True, max_length=8, default='N/A')
     telefone_fixo = models.CharField(blank=True, null=True, max_length=8, default='NA')
 
     cep = models.CharField(blank=False, null=False,
@@ -82,10 +81,6 @@ class DadosSolicPesquisa(models.Model):
 
     tipo_solic = models.CharField(
         choices=TIPO_SOLIC, blank=False, null=False, verbose_name='Tipo de solicitação', max_length=20)
-
-    # Esse campo deve permitir anexar documentos
-    # rel_final = models.CharField(
-    #     blank=False, null=False, max_length=500, verbose_name='Relatorio final de resultados')
 
     foto = models.CharField(choices=YES_OR_NOT, blank=False,
                             null=False, verbose_name='Fotografia e imagens da UC?', max_length=3)
