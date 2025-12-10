@@ -44,7 +44,6 @@ class DadosPesqForm(forms.ModelForm):
         'class': 'form-control form-control',
         'type': 'date',
       })
-    # self.fields['licenca_inst'].widget.attrs.update({'class': 'form-select'})
 
 class MembroEquipeForm(forms.ModelForm):
   class Meta:

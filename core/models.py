@@ -17,7 +17,7 @@ class User(AbstractUser):
 
 
 class DadosPessoais(models.Model):
-    usuario = models.ForeignKey(
+    usuario = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name='usuario')
     nome = models.CharField(blank=False, null=False, max_length=80)
     sexo = models.CharField(choices=SEXO, blank=False, null=False, max_length=10)
