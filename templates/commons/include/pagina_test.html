@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PAGINA-TESTE</title>
+</head>
+  <body>
+
+    <!-- Sweat alert local file -->
+    <script src="{% static 'js/sweetalert2@11.js' %}"></script>
+    <!-- Alert messages in sweet alert -->
+    {% if messages %}
+      {% for message in messages %}
+        {% if not 'logged_in' in message.tags %}
+          {% if 'alert-success' in message.tags %}
+            <script>
+              Swal.fire({
+              position: "top",
+              title: "Sucesso!",
+              icon: "success",
+              text: "{{ message|escapejs }}",
+              timer: 2500,
+              showConfirmButton: false,
+              draggable: true,
+              backdrop: false
+              });
+            </script>
+          {% elif 'alert-info' in message.tags %}
+            <script>
+              Swal.fire({
+              position: "top",
+              title: "Informação",
+              icon: "info",
+              text: "{{ message|escapejs }}",
+              timer: 2500,
+              showConfirmButton: false,
+              draggable: true,
+              backdrop: false
+              });
+            </script>
+          {% elif 'alert-warning' in message.tags %}
+            <script>
+              Swal.fire({
+              position: "top",
+              title: "Alerta",
+              icon: "warning",
+              text: "{{ message|escapejs }}",
+              timer: 2500,
+              showConfirmButton: false,
+              draggable: true,
+              backdrop: false
+              });
+            </script>
+          {% else %}
+            <script>
+              Swal.fire({
+              position: "top",
+              title: "Error",
+              icon: "error",
+              text: "{{ message|escapejs }}",
+              timer: 2500,
+              showConfirmButton: false,
+              draggable: true,
+              backdrop: false
+              });
+            </script>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
+  </body>
+</html>

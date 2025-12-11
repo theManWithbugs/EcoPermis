@@ -1,7 +1,7 @@
 {% if messages %}
     {% for message in messages %}
         <div class="alert {{message.tags}} text-center alert-dismissible fade show mt-3 fs-5" id="msg" role="alert">
-            
+
             {% if message.tags == 'alert-info' %}
                 <i class="fa-solid fa-circle-info fa-xl"></i>
                 &ensp;

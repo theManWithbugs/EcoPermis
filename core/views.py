@@ -36,14 +36,15 @@ def login_view(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
 
-        try:
-            user = authenticate(request, username=username, password=password)
-        except Exception as e:
-            messages.error(request, f'{e}')
+        #Caso não exista vai retornar None
+        user = authenticate(request, username=username, password=password)
 
         if user is not None:
-            login(request, user)
-            return redirect('home')
+            try:
+                login(request, user)
+                return redirect('home')
+            except Exception as e:
+                messages.error(request, f'{e}')
         else:
             messages.error(request, 'Login ou senha incorretos!')
 
@@ -368,3 +369,11 @@ def minhas_solic(request):
     }
 
     return render(request, template_name, context)
+
+@login_required
+def pagina_teste(request):
+    template_name = 'commons/include/pagina_test.html'
+
+    # messages.success(request, 'Bem vindo!')
+
+    return render(request, template_name)

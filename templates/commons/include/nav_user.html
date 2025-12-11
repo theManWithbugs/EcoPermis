@@ -65,32 +65,13 @@
   <!-- Alert messages in sweet alert -->
   {% if messages %}
     {% for message in messages %}
-      {% if 'logged_in' in message.tags %}
-          <script>
-            const Toast = Swal.mixin({
-              toast: true,
-              position: "top-end",
-              showConfirmButton: false,
-              timer: 3000,
-              timerProgressBar: true,
-              didOpen: (toast) => {
-                  toast.onmouseenter = Swal.stopTimer;
-                  toast.onmouseleave = Swal.resumeTimer;
-              }
-            });
-              Toast.fire({
-              icon: "success",
-              title: "{{ message|escapejs }}"
-            });
-          </script>
-      {% endif %}
-
       {% if not 'logged_in' in message.tags %}
+        {% if 'alert-success' in message.tags %}
           <script>
             Swal.fire({
             position: "top",
-            title: "{% if 'success' in message.tags %}Sucesso!{% else %}Mensagem!{% endif %}",
-            icon: "{% if 'success' in message.tags %}success{% elif 'error' in message.tags %}error{% else %}info{% endif %}",
+            title: "Sucesso!",
+            icon: "success",
             text: "{{ message|escapejs }}",
             timer: 2500,
             showConfirmButton: false,
@@ -98,6 +79,46 @@
             backdrop: false
             });
           </script>
+        {% elif 'alert-info' in message.tags %}
+          <script>
+            Swal.fire({
+            position: "top",
+            title: "Informação",
+            icon: "info",
+            text: "{{ message|escapejs }}",
+            timer: 2500,
+            showConfirmButton: false,
+            draggable: true,
+            backdrop: false
+            });
+          </script>
+        {% elif 'alert-warning' in message.tags %}
+          <script>
+            Swal.fire({
+            position: "top",
+            title: "Alerta",
+            icon: "warning",
+            text: "{{ message|escapejs }}",
+            timer: 2500,
+            showConfirmButton: false,
+            draggable: true,
+            backdrop: false
+            });
+          </script>
+        {% else %}
+          <script>
+            Swal.fire({
+            position: "top",
+            title: "Error",
+            icon: "error",
+            text: "{{ message|escapejs }}",
+            timer: 2500,
+            showConfirmButton: false,
+            draggable: true,
+            backdrop: false
+            });
+          </script>
+        {% endif %}
       {% endif %}
     {% endfor %}
   {% endif %}

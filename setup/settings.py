@@ -127,7 +127,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR / 'media')
 LOGIN_URL = 'login'
 
 MESSAGE_TAGS = {
-    messages.DEBUG: 'alert-info',
+    messages.DEBUG: 'alert-debug',
     messages.INFO: 'alert-info',
     messages.SUCCESS: 'alert-success',
     messages.WARNING: 'alert-warning',

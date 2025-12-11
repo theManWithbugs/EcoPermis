@@ -33,4 +33,6 @@ urlpatterns = [
     # Forms view
     path('home/dados_pessoais/', views.dados_pessoais, name='dados_pessoais'),
     path('home/solic_pesquisa/', views.solic_pesquisa, name='solic_pesq'),
+
+    path('home/pagina_test/', views.pagina_teste, name='pagina_test')
 ]
