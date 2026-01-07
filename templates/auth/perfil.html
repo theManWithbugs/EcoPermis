@@ -9,8 +9,13 @@
   <div class="card shadow-sm">
     <div class="card-header">
       <div class="row">
-        <div class="col-md-auto">
+        <div class="col-md-11">
           <h4 class="mb-0">{{ request.user.username }}</h4>
+        </div>
+
+        <div class="col-md-1">
+          <a href="{% url 'edit_perfil' request.user.id %}" class="btn btn-outline-secondary">
+            Editar</a>
         </div>
       </div>
     </div>

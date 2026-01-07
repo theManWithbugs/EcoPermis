@@ -15,6 +15,11 @@ class DadosPssForm(forms.ModelForm):
     self.fields['estado'].widget.attrs.update({'class': 'form-select'})
     self.fields['municipio'].widget.attrs.update({'class': 'form-select'})
 
+# class EditarDadosForm(forms.ModelForm):
+#   class Meta:
+#     model = DadosPessoais
+#     fields = ''
+
 class DadosPesqForm(forms.ModelForm):
   class Meta:
     model = DadosSolicPesquisa
@@ -65,3 +70,30 @@ class Arq_Rel_Form(forms.ModelForm):
     for f in self.fields:
       self.fields[f].widget.attrs['class'] = 'form-control form-control-sm'
       self.fields['documento'].widget.attrs['readonly'] = 'readonly'
+
+class Solic_Ugai(forms.ModelForm):
+  class Meta:
+    model = SolicitacaoUgais
+    fields = '__all__'
+    exclude = ['user_solic']
+    widgets = {
+      'ativ_desenv': forms.Textarea(attrs={
+        'class': 'form-control',
+        'rows': 2,
+        'placeholder': 'Descrição das atividades...'
+      }),
+    }
+
+  def __init__(self, *args, **kwargs):
+    super(Solic_Ugai, self).__init__(*args, **kwargs)
+    for f in self.fields:
+      self.fields[f].widget.attrs['class'] = 'form-control'
+    self.fields['ugai'].widget.attrs.update({'class': 'form-select'})
+    self.fields['data_inicio'].widget = forms.DateInput(attrs={
+        'class': 'form-control form-control',
+        'type': 'date',
+      })
+    self.fields['data_final'].widget = forms.DateInput(attrs={
+        'class': 'form-control form-control',
+        'type': 'date',
+      })

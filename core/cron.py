@@ -1,3 +1,4 @@
+from datetime import timezone
 from django_q.models import Schedule
 
 def iniciar_agendamentos():

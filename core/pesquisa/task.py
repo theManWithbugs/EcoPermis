@@ -1,5 +1,5 @@
 from django.utils import timezone
-from .models import DadosSolicPesquisa
+from models import DadosSolicPesquisa
 
 def verificar_status_pesquisa():
     hoje = timezone.localdate()

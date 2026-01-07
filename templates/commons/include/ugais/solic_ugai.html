@@ -1,0 +1,96 @@
+{% extends 'commons/include/nav_user.html' %}
+{% load static %}
+
+{% block content %}
+
+<form action="{% url 'solic_ugai' %}" method="post">
+  {% csrf_token %}
+
+  {% if form.non_field_errors %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ form.non_field_errors }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  {% endif %}
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      {{ form.ugai.label_tag }}
+      {{ form.ugai }}
+      {% for error in form.ugai.errors %}
+        <div class="text-danger small">{{ error }}</div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-4">
+      {{ form.instituicao.label_tag }}
+      {{ form.instituicao }}
+      {% for error in form.instituicao.errors %}
+        <div class="text-danger small">{{ error }}</div>
+      {% endfor %}
+    </div>
+
+    <div class="col-md-4">
+      {{ form.setor.label_tag }}
+      {{ form.setor }}
+      {% for error in form.setor.errors %}
+        <div class="text-danger small">{{ error }}</div>
+      {% endfor %}
+    </div>
+
+    <div class="col-md-4">
+      {{ form.cargo.label_tag }}
+      {{ form.cargo }}
+      {% for error in form.cargo.errors %}
+        <div class="text-danger small">{{ error }}</div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      {{ form.ativ_desenv.label_tag }}
+      {{ form.ativ_desenv }}
+      {% for error in form.ativ_desenv.errors %}
+        <div class="text-danger small">{{ error }}</div>
+      {% endfor %}
+    </div>
+
+    <div class="col-md-6">
+      {{ form.publico_alvo.label_tag }}
+      {{ form.publico_alvo }}
+      {% for error in form.publico_alvo.errors %}
+        <div class="text-danger small">{{ error }}</div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-6">
+      {{ form.data_inicio.label_tag }}
+      {{ form.data_inicio }}
+      {% for error in form.data_inicio.errors %}
+        <div class="text-danger small">{{ error }}</div>
+      {% endfor %}
+    </div>
+
+    <div class="col-md-6">
+      {{ form.data_final.label_tag }}
+      {{ form.data_final }}
+      {% for error in form.data_final.errors %}
+        <div class="text-danger small">{{ error }}</div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <p><strong>Observação: Fica ciente de que a solicitação passará por análise, passível de
+  deferimento ou indeferimento pela SEMA</strong></p>
+
+  <div class="text-center">
+    <button type="submit" class="btn btn-success">Salvar</button>
+  </div>
+</form>
+
+{% endblock content %}

@@ -147,3 +147,17 @@ class ArquivosRelFinal(models.Model):
 
     def __str__(self):
         return f"{self.pesquisa.acao_realizada}"
+
+class SolicitacaoUgais(models.Model):
+    user_solic = models.ForeignKey(User, on_delete=models.CASCADE)
+    ugai = models.CharField(choices=CHOICES_UGAIS, max_length=16, verbose_name='Qual ugai?')
+    instituicao = models.CharField(max_length=40, blank=False, null=False, verbose_name='Instituição')
+    setor = models.CharField(max_length=40, blank=False, null=False)
+    cargo = models.CharField(max_length=40, blank=False, null=False)
+    ativ_desenv = models.CharField(max_length=80, blank=False, null=False, verbose_name='Atividades que irá desenvolver')
+    publico_alvo = models.CharField(max_length=80, blank=False, null=False, verbose_name='Público alvo')
+    data_inicio = models.DateField(default=timezone.localdate)
+    data_final = models.DateField(default=timezone.localdate)
+
+    def __str__(self):
+        return f"{self.ugai}"

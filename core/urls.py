@@ -6,7 +6,8 @@ urlpatterns = [
     path('pagina_sucess/', views.pagina_sucesso, name='pagina_sucesso'),
 
     path('', views.login_view, name='login'),
-    path('home/login', views.perfil, name='perfil'),
+    path('home/perfil', views.perfil, name='perfil'),
+    path('home/editar_perfil/<str:id>/', views.editar_perfil, name='edit_perfil'),
 
     path('logout/', views.logoutView, name='logout'),
 
@@ -33,6 +34,7 @@ urlpatterns = [
     # Forms view
     path('home/dados_pessoais/', views.dados_pessoais, name='dados_pessoais'),
     path('home/solic_pesquisa/', views.solic_pesquisa, name='solic_pesq'),
+    path('home/solic_ugai/', views.solic_ugais, name='solic_ugai'),
 
     path('home/pagina_test/', views.pagina_teste, name='pagina_test')
 ]

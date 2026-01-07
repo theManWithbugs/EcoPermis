@@ -62,6 +62,28 @@ def perfil(request):
 
     return render(request, template_name, {'objs': objs})
 
+@login_required
+def editar_perfil(request, id):
+    template_name = 'auth/alt_dados.html'
+
+    dados = DadosPessoais.objects.filter(usuario=id).first()
+
+    if request.method == 'POST':
+        form = DadosPssForm(request.POST or None, instance=dados)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Alteração realizada com sucesso!')
+            return redirect('perfil')
+    else:
+        form = DadosPssForm(instance=dados)
+
+    context = {
+        'id': id,
+        'form': form
+    }
+
+    return render(request, template_name, context)
+
 #------------------------------------------------------------------------#
 #------------------------------------------------------------------------#
 
@@ -377,3 +399,34 @@ def pagina_teste(request):
     # messages.success(request, 'Bem vindo!')
 
     return render(request, template_name)
+
+#UGAIS
+@login_required
+def solic_ugais(request):
+    template_name = 'commons/include/ugais/solic_ugai.html'
+
+    form = Solic_Ugai(request.POST or None)
+
+    user = request.user
+    usuario = request.user.id
+    dados_pss = DadosPessoais.objects.filter(usuario=usuario).first()
+
+    if dados_pss == None:
+        return redirect('dados_pessoais')
+
+    if request.method == 'POST':
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.user_solic = user
+            obj.save()
+            messages.success(request, 'Solicitação efetuada com sucesso!')
+        else:
+            messages.error(request, f"Erros: {form.errors}")
+    else:
+        form = Solic_Ugai()
+
+    context = {
+        'form': form
+    }
+
+    return render(request, template_name, context)

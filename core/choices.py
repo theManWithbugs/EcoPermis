@@ -87,3 +87,11 @@ CHOICES_AREA_ATUACAO = [
   ('CAVIDADES NATURAIS', 'Cavidades Naturais'),
   ('OUTROS', 'Outros')
 ]
+
+CHOICES_UGAIS = [
+  ('UGAI_LIBERDADE', 'UGAI Liberdade'),
+  ('UGAI_ACURAUA', 'UGAI Acuraua'),
+  ('UGAI_JURUPARI', 'UGAI Jurupari'),
+  ('UGAI_ANTIMARY', 'UGAI Antimary'),
+  ('UGAI_CHANDLESS', 'UGAI Chandles')
+]
