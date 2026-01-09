@@ -149,15 +149,22 @@ class ArquivosRelFinal(models.Model):
         return f"{self.pesquisa.acao_realizada}"
 
 class SolicitacaoUgais(models.Model):
+    id = models.UUIDField(
+        primary_key=True, default=uuid.uuid4, editable=False)
     user_solic = models.ForeignKey(User, on_delete=models.CASCADE)
     ugai = models.CharField(choices=CHOICES_UGAIS, max_length=16, verbose_name='Qual ugai?')
-    instituicao = models.CharField(max_length=40, blank=False, null=False, verbose_name='Instituição')
-    setor = models.CharField(max_length=40, blank=False, null=False)
-    cargo = models.CharField(max_length=40, blank=False, null=False)
+    instituicao = models.CharField(max_length=40, blank=True, null=True, verbose_name='Instituição', default='NA')
+    setor = models.CharField(max_length=40, blank=True, null=True, default='NA')
+    cargo = models.CharField(max_length=40, blank=True, null=True, default='NA')
     ativ_desenv = models.CharField(max_length=80, blank=False, null=False, verbose_name='Atividades que irá desenvolver')
     publico_alvo = models.CharField(max_length=80, blank=False, null=False, verbose_name='Público alvo')
+    status = models.BooleanField(default=False)
+    data_solicitacao = models.DateField(default=timezone.localdate)
     data_inicio = models.DateField(default=timezone.localdate)
     data_final = models.DateField(default=timezone.localdate)
 
     def __str__(self):
         return f"{self.ugai}"
+
+    class Meta:
+        db_table = "solic_ugai"

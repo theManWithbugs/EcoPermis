@@ -13,6 +13,7 @@
     <div class="mb-4">
         <h2 class="fw-bold text-success">Solicitação de Pesquisa</h2>
         <p class="text-muted">Preencha os campos abaixo para registrar sua solicitação de pesquisa</p>
+        <strong class="text-bold fs-5">Campos Obrigatorios ( <span class="text-danger">*</span> )</strong>
     </div>
     <form action="{% url 'solic_pesq' %}" method="post">
         {% csrf_token %}
@@ -26,6 +27,7 @@
 
         <div class="row mb-3 main_form">
             <div class="col-md-12">
+                <span class="text-danger">*</span>
                 {{ form.acao_realizada.label_tag }}
                 {{ form.acao_realizada }}
                 {% for error in form.acao_realizada.errors %}
@@ -36,6 +38,7 @@
 
         <div class="row mb-3 main_form">
             <div class="col-md-12">
+                <span class="text-danger">*</span>
                 {{ form.unidade_cons.label_tag }}
                 {{ form.unidade_cons }}
                 {% for error in form.unidade_cons.errors %}
@@ -46,6 +49,7 @@
 
         <div class="row mb-3 main_form">
             <div class="col-md-4">
+                <span class="text-danger">*</span>
                 {{ form.tipo_solic.label_tag }}
                 {{ form.tipo_solic }}
                 {% for error in form.tipo_solic.errors %}
@@ -54,6 +58,7 @@
             </div>
 
             <div class="col-md-4 main_form">
+                <span class="text-danger">*</span>
                 {{ form.foto.label_tag }}
                 {{ form.foto }}
                 {% for error in form.foto.errors %}
@@ -62,6 +67,7 @@
             </div>
 
             <div class="col-md-4 main_form">
+                <span class="text-danger">*</span>
                 {{ form.licenca_inst.label_tag }}
                 {{ form.licenca_inst }}
                 {% for error in form.licenca_inst.errors %}
@@ -71,17 +77,8 @@
         </div>
 
         <div class="row mb-3 main_form">
-            <div class="col-md-12">
-                {{ form.periodo_dur.label_tag }}
-                {{ form.periodo_dur }}
-                {% for error in form.periodo_dur.errors %}
-                <div class="text-danger small">{{ error }}</div>
-                {% endfor %}
-            </div>
-        </div>
-
-        <div class="row mb-3 main_form">
             <div class="col-md-6">
+                <span class="text-danger">*</span>
                 {{ form.retorno_comuni.label_tag }}
                 {{ form.retorno_comuni }}
                 {% for error in form.retorno_comuni.errors %}
@@ -90,6 +87,7 @@
             </div>
 
             <div class="col-md-6">
+                <span class="text-danger">*</span>
                 {{ form.area_atuacao.label_tag }}
                 {{ form.area_atuacao }}
                 {% for error in form.area_atuacao.errors %}
@@ -100,6 +98,7 @@
 
         <div class="row mb-3 main_form">
             <div class="col-md-6">
+                <span class="text-danger">*</span>
                 {{ form.inicio_atividade.label_tag }}
                 {{ form.inicio_atividade }}
                 {% for error in form.inicio_atividade.errors %}
@@ -108,19 +107,10 @@
             </div>
 
             <div class="col-md-6">
+                <span class="text-danger">*</span>
                 {{ form.final_atividade.label_tag }}
                 {{ form.final_atividade }}
                 {% for error in form.final_atividade.errors %}
-                <div class="text-danger small">{{ error }}</div>
-                {% endfor %}
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12">
-                {{ form.status.label_tag }}
-                {{ form.status }}
-                {% for error in form.status.errors %}
                 <div class="text-danger small">{{ error }}</div>
                 {% endfor %}
             </div>

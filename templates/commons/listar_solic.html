@@ -1,3 +1,4 @@
+{% extends 'commons/include/nav_user.html' %}
 {% load static %}
 
 {% block css %}
@@ -7,22 +8,33 @@
 
 {% block content %}
 
-<h3 class="text-success mb-3">
-  <span class="text-dark">Atual:</span> (Pesquisas aprovadas)</h3>
+<div class="d-flex justify-content-center">
+  <h3 class="text-dark">
+    Listar solicitações recebidas</h3>
+</div>
 
-<!-- {% include 'commons/include/nav_pesquisas/link_menu.html' %} -->
+<button onclick="carregarPesqAprovada()" class="btn btn-secondary">
+  Aprovadas</button>
+<button onclick="carregarPesqNaoAprovada()" class="btn btn-secondary">
+  Não aprovadas</button>
+<button onclick="carregarSolicUgai()" class="btn btn-secondary">
+  UGAI</button>
+
 <div id="container-resultados"></div>
 
 <hr>
-<div class="button-container" id="btn-anterior">
-  <button class="button-3d">
+<div class="button-container">
+
+  <button class="button-3d" id="btn-anterior">
     <div class="button-top">
       <span class="material-icons">❮</span>
     </div>
     <div class="button-bottom"></div>
     <div class="button-base"></div>
   </button>
+
   <span id="info-pagina" class="mt-4">Página X de Y</span>
+
   <button class="button-3d" id="btn-proximo">
     <div class="button-top">
       <span class="material-icons">❯</span>
@@ -30,10 +42,11 @@
     <div class="button-bottom"></div>
     <div class="button-base"></div>
   </button>
+
 </div>
 
 {% endblock content %}
 
 {% block js %}
-  <script src="{% static 'js/pesquisas_solic/pesquisas_aprov.js' %}"></script>
+  <script src="{% static 'js/return_resp_list.js' %}"></script>
 {% endblock js %}

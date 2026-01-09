@@ -13,6 +13,11 @@ urlpatterns = [
 
     path('home/', views.home, name='home'),
 
+    #Solicitar
+    #--------------------------------------------------------------------------------------#
+    path('home/solicitar/', views.realizar_solic, name='realizar_solic'),
+    path('home/listar_solicitacoes/', views.listar_solicitacoes, name='listar_solic'),
+    #--------------------------------------------------------------------------------------#
     path('home/info_pesquisa/<str:id>/', views.info_pesquisa, name='info_pesquisa'),
 
     #--------------------------------------------------------------------------------------#
@@ -34,7 +39,15 @@ urlpatterns = [
     # Forms view
     path('home/dados_pessoais/', views.dados_pessoais, name='dados_pessoais'),
     path('home/solic_pesquisa/', views.solic_pesquisa, name='solic_pesq'),
+
+    #-------------------------------------------------------------------------------------#
     path('home/solic_ugai/', views.solic_ugais, name='solic_ugai'),
+    path('home/info_solic_ugai/<str:id>/', views.info_solic_ugai, name='info_solic_ugai'),
+
+    path('home/ugais_naprov/', views.ugais_naprov, name='ugais_naprov'),
+    #Json responses above here
+    path('api/ped_ugais_naprov/', views.api_ugai_solicitadas, name='ugai_naprov'),
+    #-------------------------------------------------------------------------------------#
 
     path('home/pagina_test/', views.pagina_teste, name='pagina_test')
 ]

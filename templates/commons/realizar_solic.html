@@ -1,0 +1,22 @@
+{% extends 'commons/include/nav_user.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="d-flex justify-content-center">
+  <h3 class="text-dark">
+    Selecione o tipo de solicitação</h3>
+</div>
+
+<ul class="nav justify-content-center fs-5 gap-3 p-3" style="background-color: silver;">
+  <li class="nav-item">
+    <a href="{% url 'solic_pesq' %}" class="nav-link active btn btn-light">
+      Solicitar Pesquisa</a>
+  </li>
+  <li class="nav-item">
+    <a href="{% url 'solic_ugai' %}" class="nav-link active btn btn-light">
+      Autorização UGAI</a>
+  </li>
+</ul>
+
+{% endblock content %}

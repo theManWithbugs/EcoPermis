@@ -1,7 +1,4 @@
-{% extends 'commons/include/nav_user.html' %}
 {% load static %}
-
-{% block title %}HOME | PESQUISAS{% endblock %}
 
 {% block css %}
   <link rel="stylesheet" href="{% static 'css/pesquisas_solic/pesquisas.css' %}">
@@ -13,13 +10,10 @@
 <h3 class="text-success mb-3">
   <span class="text-dark">Atual:</span> (Pesquisas aguardando aprovação)</h3>
 
-{% include 'commons/include/nav_pesquisas/link_menu.html' %}
+<!-- {% include 'commons/include/nav_pesquisas/link_menu.html' %} -->
 <div id="container-resultados"></div>
 
 <hr>
-<!-- <button id="btn-anterior">← Anterior</button>
-<span id="info-pagina">Página X de Y</span>
-<button id="btn-proximo">Próximo →</button> -->
 <div class="button-container" id="btn-anterior">
   <button class="button-3d">
     <div class="button-top">

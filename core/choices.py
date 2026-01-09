@@ -89,9 +89,9 @@ CHOICES_AREA_ATUACAO = [
 ]
 
 CHOICES_UGAIS = [
-  ('UGAI_LIBERDADE', 'UGAI Liberdade'),
-  ('UGAI_ACURAUA', 'UGAI Acuraua'),
-  ('UGAI_JURUPARI', 'UGAI Jurupari'),
-  ('UGAI_ANTIMARY', 'UGAI Antimary'),
-  ('UGAI_CHANDLESS', 'UGAI Chandles')
+  ('UGAI LIBERDADE', 'UGAI Liberdade'),
+  ('UGAI ACURAUA', 'UGAI Acuraua'),
+  ('UGAI JURUPARI', 'UGAI Jurupari'),
+  ('UGAI ANTIMARY', 'UGAI Antimary'),
+  ('UGAI CHANDLESS', 'UGAI Chandles')
 ]

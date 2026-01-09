@@ -12,6 +12,7 @@ from django.core.mail import EmailMultiAlternatives
 from decouple import config
 from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
+from functools import wraps
 
 #Local imports
 from core.forms import *
@@ -20,6 +21,24 @@ from .utils import *
 #Debug the code
 # messages.error(request, f"Erros: {form.errors}")
 # print((request, f"Erros: {form.errors}"))
+
+def dados_pessoais_required(view_func):
+    #usar wraps para evitar: quebrar reverse, perder o nome da view, quebrar permissões e logs
+    @wraps(view_func)
+    #quando alguém acessar essa URL, execute o wrapper primeiro
+    def wrapper(request, *args, **kwargs):
+
+        if not DadosPessoais.objects.filter(
+            usuario=request.user.id
+        ).exists():
+            return redirect('dados_pessoais')
+
+        #Caso o if não seja executado retorna o objeto request e os parametros da view
+        #return view_func(request) → executa a view
+        #A view só roda se o wrapper permitir
+        return view_func(request, *args, **kwargs)
+
+    return wrapper
 
 def is_staff(user):
     return user.is_staff
@@ -109,8 +128,8 @@ def dados_pessoais(request):
                 obj.usuario = usuario
                 obj.save()
 
-                messages.success(request, 'Cadastro atualizado!')
-                return redirect('solic_pesq')
+                messages.success(request, 'Informações atualizadas com sucesso!')
+                return redirect('realizar_solic')
             except Exception as e:
                 messages.error(request, f'Ocorreu um erro: {e}')
     else:
@@ -126,6 +145,9 @@ def dados_pessoais(request):
 def solic_pesquisa(request):
     template_name = 'commons/include/solic_pesquisa.html'
 
+    #Check if the user has data
+    check_dadospss(request)
+
     user = request.user
 
     # dados_pessoais = DadosPessoais.objects.filter(usuario=request.user)
@@ -136,11 +158,263 @@ def solic_pesquisa(request):
 
     prefix = 'membros'
 
+    # usuario = request.user.id
+    # dados_pss = DadosPessoais.objects.filter(usuario=usuario).first()
+
+    # if dados_pss == None:
+    #     return redirect('dados_pessoais')
+
+    if request.method == 'GET':
+        form = DadosPesqForm()
+        formset = MembroEquipeFormset(prefix=prefix)
+        context = {
+            'form': form,
+            'formset': formset,
+        }
+        return render(request, template_name, context)
+
+    # POST
+    form = DadosPesqForm(request.POST)
+    if form.is_valid():
+        obj_paiSaved = form.save(commit=False)
+        obj_paiSaved.user_solic = user
+        obj_paiSaved.save()
+
+        formset = MembroEquipeFormset(request.POST, instance=obj_paiSaved, prefix=prefix)
+
+        if formset.is_valid():
+
+            try:
+                formset.save()
+                messages.success(request, 'Pesquisa solicitada com sucesso!')
+
+                data = format_data_br(str(obj_paiSaved.data_solicitacao))
+
+                destinatarios = ['wilianaraujo407@gmail.com']  # pode adicionar outros
+                assunto = "STATUS: Aguardando aprovação"
+
+                # Corpo em texto simples (fallback)
+                texto_simples = "Sua pesquisa foi solicitada com sucesso!"
+
+                html_content = f"""
+                <html>
+                <body style="font-family: Arial, sans-serif; color: #333;">
+
+                    <h2 style="color:#2c3e50;">
+                        Pesquisa Solicitada com Sucesso!
+                    </h2>
+
+                    <p style="font-size: 15px;">
+                        <strong>Solicitante:</strong> {request.user.username}<br>
+                        <strong>Ação a ser realizada:</strong> {obj_paiSaved.acao_realizada}<br>
+                        <strong>Data da solicitação:</strong> {data}
+                    </p>
+
+                    <br>
+                    <p style="font-size: 14px; color:#555;">
+                        Atenciosamente,<br>
+                        <strong>SEMA - ECO Permis</strong>
+                    </p>
+
+                </body>
+                </html>
+                """
+
+                email = EmailMultiAlternatives(
+                    subject=assunto,
+                    body=texto_simples,
+                    from_email=settings.EMAIL_HOST_USER,
+                    to=destinatarios
+                )
+
+                email.attach_alternative(html_content, "text/html")
+                email.send()
+            except Exception as e:
+                messages.error(request, f'ocorreu um erro: {e}')
+
+
+            return redirect('info_pesquisa', obj_paiSaved.id)
+        else:
+            # formset invalid, fall through to re-render with errors
+            pass
+    else:
+        # parent form invalid; bind formset to POST so user entries are preserved
+        formset = MembroEquipeFormset(request.POST, prefix=prefix)
+        print((request, f"Erros: {form.errors}"))
+
+    context = {
+        'form': form,
+        'formset': formset,
+    }
+
+    return render(request, template_name, context)
+
+@login_required
+def pesquisas_aprovadas(request):
+    template_name = 'commons/include/nav_pesquisas/pesq_aprovadas.html'
+    return render(request, template_name)
+
+@login_required
+def pesquisas_n_aprovadas(request):
+    template_name = 'commons/include/nav_pesquisas/pesq_n_aprov.html'
+    return render(request, template_name)
+
+def api_pesq_aprov(request):
+    # Filtra apenas registros com status=False
+    dados = DadosSolicPesquisa.objects.filter(status=True)
+
+    paginator = Paginator(dados, 5)
+
+    # Número da página vindo da query string (?page=)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
+    # Converte os objetos em dicionários incluindo o campo id
+    itens_json = []
+    for item in page_obj.object_list:
+        d = model_to_dict(item)
+        d['id'] = str(item.id)  # UUID convertido para string
+        itens_json.append(d)
+
+    # Retorna os dados em formato JSON
+    return JsonResponse({
+        'items': itens_json,
+        'currentPage': page_obj.number,
+        'totalPages': paginator.num_pages,
+        'hasNext': page_obj.has_next(),
+        'hasPrevious': page_obj.has_previous(),
+    })
+
+def api_pesq_n_aprovadas(request):
+
+    #Dessa vez filtra pelo items com status = false
+    dados = DadosSolicPesquisa.objects.filter(status=False).order_by('data_solicitacao')
+
+    paginator = Paginator(dados, 5)
+
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
+    itens_json = []
+    for item in page_obj.object_list:
+        d = model_to_dict(item)
+        d['id'] = str(item.id)
+        itens_json.append(d)
+
+    # Retorna os dados em formato JSON
+    return JsonResponse({
+        'items': itens_json,
+        'currentPage': page_obj.number,
+        'totalPages': paginator.num_pages,
+        'hasNext': page_obj.has_next(),
+        'hasPrevious': page_obj.has_previous(),
+    })
+
+#Utilização de UGAI
+#------------------------------------------------------------------------#
+#------------------------------------------------------------------------#
+@login_required
+def ugais_naprov(request):
+    template_name = 'commons/include/ugais/ped_ugai_pend.html'
+    return render(request, template_name)
+
+def api_ugai_solicitadas(request):
+    dados = SolicitacaoUgais.objects.filter(status=False).order_by('data_solicitacao')
+
+    paginator = Paginator(dados, 5)
+
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
+    itens_json = []
+    for item in page_obj.object_list:
+        d = model_to_dict(item)
+        d['id'] = str(item.id)
+        itens_json.append(d)
+
+    return JsonResponse({
+        'items': itens_json,
+        'currentPage': page_obj.number,
+        'totalPages': paginator.num_pages,
+        'hasNext': page_obj.has_next(),
+        'hasPrevious': page_obj.has_previous(),
+    })
+
+@login_required
+@dados_pessoais_required
+def solic_ugais(request):
+    template_name = 'commons/include/ugais/solic_ugai.html'
+
+    form = Solic_Ugai(request.POST or None)
+
+    user = request.user
     usuario = request.user.id
     dados_pss = DadosPessoais.objects.filter(usuario=usuario).first()
 
     if dados_pss == None:
         return redirect('dados_pessoais')
+
+    if request.method == 'POST':
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.user_solic = user
+            obj.save()
+            messages.success(request, 'Solicitação efetuada com sucesso!')
+            return redirect('home')
+        else:
+            messages.error(request, f"Erros: {form.errors}")
+    else:
+        form = Solic_Ugai()
+
+    context = {
+        'form': form
+    }
+
+    return render(request, template_name, context)
+
+@login_required
+def info_solic_ugai(request, id):
+    template_name = 'commons/include/ugais/info_solic_ugai.html'
+
+    usuario = request.user.id
+    dados_pss = DadosPessoais.objects.filter(usuario=usuario).first()
+
+    if dados_pss == None:
+        return redirect('dados_pessoais')
+
+    solic_ugai = SolicitacaoUgais.objects.filter(id=id)
+
+    context = {
+        'obj': solic_ugai
+    }
+
+    return render(request, template_name, context)
+#------------------------------------------------------------------------#
+#------------------------------------------------------------------------#
+
+#Solicitação de pesquisa
+#------------------------------------------------------------------------#
+#------------------------------------------------------------------------#
+@login_required
+@dados_pessoais_required
+def solic_pesquisa(request):
+    template_name = 'commons/include/solic_pesquisa.html'
+
+    user = request.user
+
+    # dados_pessoais = DadosPessoais.objects.filter(usuario=request.user)
+    MembroEquipeFormset = inlineformset_factory(
+        DadosSolicPesquisa, MembroEquipe, form=MembroEquipeForm,
+        extra=1, can_delete=True
+    )
+
+    prefix = 'membros'
+
+    # usuario = request.user.id
+    # dados_pss = DadosPessoais.objects.filter(usuario=usuario).first()
+
+    # if dados_pss == None:
+    #     return redirect('dados_pessoais')
 
     if request.method == 'GET':
         form = DadosPesqForm()
@@ -290,7 +564,7 @@ def api_pesq_n_aprovadas(request):
 
 @login_required
 def info_pesquisa(request, id):
-    template_name = 'commons/include/info_pesquisa.html'
+    template_name = 'commons/include/nav_pesquisas/info_pesquisa.html'
 
     obj = DadosSolicPesquisa.objects.filter(id=id)
     documentos = ArquivosRelFinal.objects.filter(pesquisa=obj.first())
@@ -375,6 +649,7 @@ def aprovar_pesquisa(request, id):
 
     return redirect('info_pesquisa', id)
 
+#Solicitações de pesquisas por parte do usuario
 @login_required
 def minhas_solic(request):
     template_name = 'commons/include/nav_pesquisas/minhas_solic.html'
@@ -391,42 +666,20 @@ def minhas_solic(request):
     }
 
     return render(request, template_name, context)
+#------------------------------------------------------------------------#
+#------------------------------------------------------------------------#
+@login_required
+def realizar_solic(request):
+    template_name = 'commons/realizar_solic.html'
+    return render(request, template_name)
+
+@login_required
+def listar_solicitacoes(request):
+    template_name = 'commons/listar_solic.html'
+    return render(request, template_name)
 
 @login_required
 def pagina_teste(request):
     template_name = 'commons/include/pagina_test.html'
 
-    # messages.success(request, 'Bem vindo!')
-
     return render(request, template_name)
-
-#UGAIS
-@login_required
-def solic_ugais(request):
-    template_name = 'commons/include/ugais/solic_ugai.html'
-
-    form = Solic_Ugai(request.POST or None)
-
-    user = request.user
-    usuario = request.user.id
-    dados_pss = DadosPessoais.objects.filter(usuario=usuario).first()
-
-    if dados_pss == None:
-        return redirect('dados_pessoais')
-
-    if request.method == 'POST':
-        if form.is_valid():
-            obj = form.save(commit=False)
-            obj.user_solic = user
-            obj.save()
-            messages.success(request, 'Solicitação efetuada com sucesso!')
-        else:
-            messages.error(request, f"Erros: {form.errors}")
-    else:
-        form = Solic_Ugai()
-
-    context = {
-        'form': form
-    }
-
-    return render(request, template_name, context)

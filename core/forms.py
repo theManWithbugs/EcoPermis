@@ -15,11 +15,6 @@ class DadosPssForm(forms.ModelForm):
     self.fields['estado'].widget.attrs.update({'class': 'form-select'})
     self.fields['municipio'].widget.attrs.update({'class': 'form-select'})
 
-# class EditarDadosForm(forms.ModelForm):
-#   class Meta:
-#     model = DadosPessoais
-#     fields = ''
-
 class DadosPesqForm(forms.ModelForm):
   class Meta:
     model = DadosSolicPesquisa
@@ -75,7 +70,7 @@ class Solic_Ugai(forms.ModelForm):
   class Meta:
     model = SolicitacaoUgais
     fields = '__all__'
-    exclude = ['user_solic']
+    exclude = ['user_solic', 'data_solicitacao']
     widgets = {
       'ativ_desenv': forms.Textarea(attrs={
         'class': 'form-control',
