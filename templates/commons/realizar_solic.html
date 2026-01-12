@@ -1,6 +1,10 @@
 {% extends 'commons/include/nav_user.html' %}
 {% load static %}
 
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/buttons/btn_white.css' %}">
+{% endblock css %}
+
 {% block content %}
 
 <div class="d-flex justify-content-center">
@@ -8,14 +12,16 @@
     Selecione o tipo de solicitação</h3>
 </div>
 
-<ul class="nav justify-content-center fs-5 gap-3 p-3" style="background-color: silver;">
+<ul class="nav justify-content-center fs-5 gap-3 p-3">
   <li class="nav-item">
-    <a href="{% url 'solic_pesq' %}" class="nav-link active btn btn-light">
-      Solicitar Pesquisa</a>
+    <a href="{% url 'solic_pesq' %}" class="white_button">
+      <span class="button_top_menu"> Solicitar Pesquisa </span>
+    </a>
   </li>
   <li class="nav-item">
-    <a href="{% url 'solic_ugai' %}" class="nav-link active btn btn-light">
-      Autorização UGAI</a>
+    <a href="{% url 'solic_ugai' %}" class="white_button">
+      <span class="button_top_menu"> Autorização UGAI </span>
+    </a>
   </li>
 </ul>
 

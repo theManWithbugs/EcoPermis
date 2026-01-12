@@ -13,6 +13,8 @@ urlpatterns = [
 
     path('home/', views.home, name='home'),
 
+    path('home/search/', views.realizar_busca, name='search'),
+
     #Solicitar
     #--------------------------------------------------------------------------------------#
     path('home/solicitar/', views.realizar_solic, name='realizar_solic'),

@@ -141,113 +141,110 @@ def dados_pessoais(request):
 
     return render(request, template_name, context)
 
-@login_required
-def solic_pesquisa(request):
-    template_name = 'commons/include/solic_pesquisa.html'
+# @login_required
+# def solic_pesquisa(request):
+#     template_name = 'commons/include/solic_pesquisa.html'
 
-    #Check if the user has data
-    check_dadospss(request)
+#     user = request.user
 
-    user = request.user
+#     # dados_pessoais = DadosPessoais.objects.filter(usuario=request.user)
+#     MembroEquipeFormset = inlineformset_factory(
+#         DadosSolicPesquisa, MembroEquipe, form=MembroEquipeForm,
+#         extra=1, can_delete=True
+#     )
 
-    # dados_pessoais = DadosPessoais.objects.filter(usuario=request.user)
-    MembroEquipeFormset = inlineformset_factory(
-        DadosSolicPesquisa, MembroEquipe, form=MembroEquipeForm,
-        extra=1, can_delete=True
-    )
+#     prefix = 'membros'
 
-    prefix = 'membros'
+#     # usuario = request.user.id
+#     # dados_pss = DadosPessoais.objects.filter(usuario=usuario).first()
 
-    # usuario = request.user.id
-    # dados_pss = DadosPessoais.objects.filter(usuario=usuario).first()
+#     # if dados_pss == None:
+#     #     return redirect('dados_pessoais')
 
-    # if dados_pss == None:
-    #     return redirect('dados_pessoais')
+#     if request.method == 'GET':
+#         form = DadosPesqForm()
+#         formset = MembroEquipeFormset(prefix=prefix)
+#         context = {
+#             'form': form,
+#             'formset': formset,
+#         }
+#         return render(request, template_name, context)
 
-    if request.method == 'GET':
-        form = DadosPesqForm()
-        formset = MembroEquipeFormset(prefix=prefix)
-        context = {
-            'form': form,
-            'formset': formset,
-        }
-        return render(request, template_name, context)
+#     # POST
+#     form = DadosPesqForm(request.POST)
+#     if form.is_valid():
+#         obj_paiSaved = form.save(commit=False)
+#         obj_paiSaved.user_solic = user
+#         obj_paiSaved.save()
 
-    # POST
-    form = DadosPesqForm(request.POST)
-    if form.is_valid():
-        obj_paiSaved = form.save(commit=False)
-        obj_paiSaved.user_solic = user
-        obj_paiSaved.save()
+#         formset = MembroEquipeFormset(request.POST, instance=obj_paiSaved, prefix=prefix)
 
-        formset = MembroEquipeFormset(request.POST, instance=obj_paiSaved, prefix=prefix)
+#         if formset.is_valid():
 
-        if formset.is_valid():
+#             try:
+#                 formset.save()
+#                 messages.success(request, 'Pesquisa solicitada com sucesso!')
 
-            try:
-                formset.save()
-                messages.success(request, 'Pesquisa solicitada com sucesso!')
+#                 data = format_data_br(str(obj_paiSaved.data_solicitacao))
 
-                data = format_data_br(str(obj_paiSaved.data_solicitacao))
+#                 destinatarios = ['wilianaraujo407@gmail.com']  # pode adicionar outros
+#                 assunto = "STATUS: Aguardando aprovação"
 
-                destinatarios = ['wilianaraujo407@gmail.com']  # pode adicionar outros
-                assunto = "STATUS: Aguardando aprovação"
+#                 # Corpo em texto simples (fallback)
+#                 texto_simples = "Sua pesquisa foi solicitada com sucesso!"
 
-                # Corpo em texto simples (fallback)
-                texto_simples = "Sua pesquisa foi solicitada com sucesso!"
+#                 html_content = f"""
+#                 <html>
+#                 <body style="font-family: Arial, sans-serif; color: #333;">
 
-                html_content = f"""
-                <html>
-                <body style="font-family: Arial, sans-serif; color: #333;">
+#                     <h2 style="color:#2c3e50;">
+#                         Pesquisa Solicitada com Sucesso!
+#                     </h2>
 
-                    <h2 style="color:#2c3e50;">
-                        Pesquisa Solicitada com Sucesso!
-                    </h2>
+#                     <p style="font-size: 15px;">
+#                         <strong>Solicitante:</strong> {request.user.username}<br>
+#                         <strong>Ação a ser realizada:</strong> {obj_paiSaved.acao_realizada}<br>
+#                         <strong>Data da solicitação:</strong> {data}
+#                     </p>
 
-                    <p style="font-size: 15px;">
-                        <strong>Solicitante:</strong> {request.user.username}<br>
-                        <strong>Ação a ser realizada:</strong> {obj_paiSaved.acao_realizada}<br>
-                        <strong>Data da solicitação:</strong> {data}
-                    </p>
+#                     <br>
+#                     <p style="font-size: 14px; color:#555;">
+#                         Atenciosamente,<br>
+#                         <strong>SEMA - ECO Permis</strong>
+#                     </p>
 
-                    <br>
-                    <p style="font-size: 14px; color:#555;">
-                        Atenciosamente,<br>
-                        <strong>SEMA - ECO Permis</strong>
-                    </p>
+#                 </body>
+#                 </html>
+#                 """
 
-                </body>
-                </html>
-                """
+#                 email = EmailMultiAlternatives(
+#                     subject=assunto,
+#                     body=texto_simples,
+#                     from_email=settings.EMAIL_HOST_USER,
+#                     to=destinatarios
+#                 )
 
-                email = EmailMultiAlternatives(
-                    subject=assunto,
-                    body=texto_simples,
-                    from_email=settings.EMAIL_HOST_USER,
-                    to=destinatarios
-                )
-
-                email.attach_alternative(html_content, "text/html")
-                email.send()
-            except Exception as e:
-                messages.error(request, f'ocorreu um erro: {e}')
+#                 email.attach_alternative(html_content, "text/html")
+#                 email.send()
+#             except Exception as e:
+#                 messages.error(request, f'ocorreu um erro: {e}')
 
 
-            return redirect('info_pesquisa', obj_paiSaved.id)
-        else:
-            # formset invalid, fall through to re-render with errors
-            pass
-    else:
-        # parent form invalid; bind formset to POST so user entries are preserved
-        formset = MembroEquipeFormset(request.POST, prefix=prefix)
-        print((request, f"Erros: {form.errors}"))
+#             return redirect('info_pesquisa', obj_paiSaved.id)
+#         else:
+#             # formset invalid, fall through to re-render with errors
+#             pass
+#     else:
+#         # parent form invalid; bind formset to POST so user entries are preserved
+#         formset = MembroEquipeFormset(request.POST, prefix=prefix)
+#         print((request, f"Erros: {form.errors}"))
 
-    context = {
-        'form': form,
-        'formset': formset,
-    }
+#     context = {
+#         'form': form,
+#         'formset': formset,
+#     }
 
-    return render(request, template_name, context)
+#     return render(request, template_name, context)
 
 @login_required
 def pesquisas_aprovadas(request):
@@ -260,12 +257,19 @@ def pesquisas_n_aprovadas(request):
     return render(request, template_name)
 
 def api_pesq_aprov(request):
+    if not request.user.is_authenticated:
+        return JsonResponse(
+            {'error': 'Usuario não autenticado!'},
+            status=401
+        )
+
     # Filtra apenas registros com status=False
     dados = DadosSolicPesquisa.objects.filter(status=True)
 
     paginator = Paginator(dados, 5)
 
     # Número da página vindo da query string (?page=)
+    # vem do request recebido
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
 
@@ -286,6 +290,11 @@ def api_pesq_aprov(request):
     })
 
 def api_pesq_n_aprovadas(request):
+    if not request.user.is_authenticated:
+        return JsonResponse(
+            {'error': 'Usuario não autenticado!'},
+            status=401
+        )
 
     #Dessa vez filtra pelo items com status = false
     dados = DadosSolicPesquisa.objects.filter(status=False).order_by('data_solicitacao')
@@ -319,6 +328,12 @@ def ugais_naprov(request):
     return render(request, template_name)
 
 def api_ugai_solicitadas(request):
+    if not request.user.is_authenticated:
+        return JsonResponse(
+            {'error': 'Usuario não autenticado!'},
+            status=401
+        )
+
     dados = SolicitacaoUgais.objects.filter(status=False).order_by('data_solicitacao')
 
     paginator = Paginator(dados, 5)
@@ -409,12 +424,6 @@ def solic_pesquisa(request):
     )
 
     prefix = 'membros'
-
-    # usuario = request.user.id
-    # dados_pss = DadosPessoais.objects.filter(usuario=usuario).first()
-
-    # if dados_pss == None:
-    #     return redirect('dados_pessoais')
 
     if request.method == 'GET':
         form = DadosPesqForm()
@@ -682,4 +691,9 @@ def listar_solicitacoes(request):
 def pagina_teste(request):
     template_name = 'commons/include/pagina_test.html'
 
+    return render(request, template_name)
+
+@login_required
+def realizar_busca(request):
+    template_name = 'commons/search.html'
     return render(request, template_name)

@@ -4,6 +4,7 @@
 {% block css %}
   <link rel="stylesheet" href="{% static 'css/pesquisas_solic/pesquisas.css' %}">
   <link rel="stylesheet" href="{% static 'css/buttons/btn_paginator.css' %}">
+  <link rel="stylesheet" href="{% static 'css/buttons/btn_white.css' %}">
 {% endblock css %}
 
 {% block content %}
@@ -13,12 +14,17 @@
     Listar solicitações recebidas</h3>
 </div>
 
-<button onclick="carregarPesqAprovada()" class="btn btn-secondary">
-  Aprovadas</button>
-<button onclick="carregarPesqNaoAprovada()" class="btn btn-secondary">
-  Não aprovadas</button>
-<button onclick="carregarSolicUgai()" class="btn btn-secondary">
-  UGAI</button>
+<button onclick="carregarPesqAprovada()" class="white_button">
+  <span class="button_top_menu"> Aprovadas </span>
+</button>
+
+<button onclick="carregarPesqNaoAprovada()" class="white_button">
+  <span class="button_top_menu"> Não aprovadas </span>
+</button>
+
+<button onclick="carregarSolicUgai()" class="white_button">
+  <span class="button_top_menu"> UGAI </span>
+</button>
 
 <div id="container-resultados"></div>
 

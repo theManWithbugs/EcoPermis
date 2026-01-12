@@ -1,0 +1,48 @@
+html {
+  overflow-y: scroll;
+}
+
+body {
+  background-color: rgba(0, 0, 0, 0.781);
+}
+
+/* Sidebar fixa no desktop */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 1000;
+  background-image: linear-gradient(to top, silver, whitesmoke);
+  width: 250px; /* define largura */
+}
+
+/* Conteúdo deslocado pelo tamanho da sidebar */
+.content-wrapper {
+  margin-left: 250px;
+}
+
+/* Responsividade para mobile */
+@media (max-width: 768px) {
+  .navbar_text {
+    display: none;
+  }
+
+  .sidebar {
+    position: relative; /* deixa de ser fixa */
+    height: auto;
+    width: 20%; /* ocupa toda a largura no topo */
+  }
+
+  .sidebar ul {
+    flex-direction: row;
+    justify-content: center;
+    overflow-x: auto; /* scroll horizontal se não couber */
+    gap: 1rem;
+  }
+
+  .content-wrapper {
+    margin-left: 0; /* remove o espaço extra */
+    margin-top: 10px; /* dá um respiro abaixo do menu */
+  }
+}

@@ -20,7 +20,6 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default=[], cast=Csv())
 
 # Application definition
 INSTALLED_APPS = [
-    'core',
     'django_q',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -28,6 +27,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'core',
+    'dashboard'
 ]
 
 Q_CLUSTER = {
