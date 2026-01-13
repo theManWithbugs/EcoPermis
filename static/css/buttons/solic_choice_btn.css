@@ -1,0 +1,11 @@
+.btn_choice {
+  padding: 3px;
+  border: solid 3px silver;
+  background-color: whitesmoke;
+  border-radius: 5px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.btn_choice:hover {
+  border-color: blue;
+}

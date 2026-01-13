@@ -20,7 +20,7 @@
 
         {% if form.non_field_errors %}
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {{ form.non_field_errors }}
+            {{ form_solic.non_field_errors }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
         {% endif %}
@@ -28,8 +28,8 @@
         <div class="row mb-3 main_form">
             <div class="col-md-12">
                 <span class="text-danger">*</span>
-                {{ form.acao_realizada.label_tag }}
-                {{ form.acao_realizada }}
+                {{ form_solic.acao_realizada.label_tag }}
+                {{ form_solic.acao_realizada }}
                 {% for error in form.acao_realizada.errors %}
                 <div class="text-danger small">{{ error }}</div>
                 {% endfor %}

@@ -3,13 +3,21 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
 
-      <link rel="stylesheet" href="{% static 'css/dashboard/css/base.css' %}">
+      <link rel="stylesheet" href="{% static 'dashboard/css/base.css' %}">
 
       <!-- BS5 -->
       <link rel="stylesheet" href="{% static 'css/bs5/bootstrap.min.css' %}">
 
       <!-- Bootstrap icons -->
       <link rel="stylesheet" href="{% static 'css/bs5/bootstrap-icons.min.css' %}">
+
+      <!-- Anychart requirements -->
+      <!-- ----------------------------------------------------------------------- -->
+      <script src="{% static 'dashboard/js/anychart-base.min.js' %}"></script>
+      <script src="{% static 'dashboard/js/anychart-ui.min.js' %}"></script>
+      <script src="{% static 'dashboard/js/anychart-exports.min.js' %}"></script>
+      <link rel="stylesheet" href="{% static 'dashboard/css/anychart-ui.min.css' %}">
+      <!-- ----------------------------------------------------------------------- -->
       <title>{% block title %}HOME |{% endblock %}</title>
       {% block css %}
       {% endblock css %}
@@ -20,7 +28,7 @@
         <div class="row flex-nowrap">
             <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 sidebar">
                 <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 min-vh-100">
-                    <img src="{% static 'css/dashboard/img/icone eco_permiss_dashboard.png' %}" class="img-fluid mb-4 mt-3 rounded shadow-lg" alt="Logo">
+                    <img src="{% static 'dashboard/img/dashboard_icon.png' %}" class="img-fluid mb-4 mt-3 rounded" alt="Logo">
                     <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start gap-3">
                         <li>
                            <a href="{% url 'dashboard:home' %}" class="text-dark text-decoration-none">🏠 <span class="navbar_text">Home</span></a>

@@ -1,6 +1,101 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
 
+
 {% block content %}
+
+  <div class="row ms-4" style="height: 500px;">
+    <div class="col-md-6">
+      <div id="container"></div>
+    </div>
+
+    <div class="col-md-6">
+      <div id="container_pizza"></div>
+    </div>
+  </div>
+
+  <script>
+    anychart.onDocumentReady(function () {
+      // create column chart
+      var chart = anychart.column();
+
+      // turn on chart animation
+      chart.animation(true);
+
+      // set chart title text settings
+      chart.title('Top 10 Cosmetic Products by Revenue');
+
+      // create area series with passed data
+      var series = chart.column([
+        ['Rouge', '80540'],
+        ['Foundation', '94190'],
+        ['Mascara', '102610'],
+        ['Lip gloss', '110430'],
+        ['Lipstick', '128000'],
+        ['Nail polish', '143760'],
+        ['Eyebrow pencil', '170670'],
+        ['Eyeliner', '213210'],
+        ['Eyeshadows', '249980']
+      ]);
+
+      // set series tooltip settings
+      series.tooltip().titleFormat('{%X}');
+
+      series
+        .tooltip()
+        .position('center-top')
+        .anchor('center-bottom')
+        .offsetX(0)
+        .offsetY(5)
+        .format('${%Value}{groupsSeparator: }');
+
+      // set scale minimum
+      chart.yScale().minimum(0);
+
+      // set yAxis labels formatter
+      chart.yAxis().labels().format('${%Value}{groupsSeparator: }');
+
+      // tooltips position and interactivity settings
+      chart.tooltip().positionMode('point');
+      chart.interactivity().hoverMode('by-x');
+
+      // axes titles
+      chart.xAxis().title('Product');
+      chart.yAxis().title('Revenue');
+
+      // set container id for the chart
+      chart.container('container');
+
+      // initiate chart drawing
+      chart.draw();
+    });
+  </script>
+
+  <script>
+
+    anychart.onDocumentReady(function () {
+      // create pie chart with passed data
+      var chart = anychart.pie3d([
+        ['Northfarthing', 235],
+        ['Westfarthing', 552],
+        ['Eastfarthing', 491],
+        ['Southfarthing', 619],
+        ['Buckland', 388],
+        ['Westmarch', 405]
+      ]);
+
+      // set chart title text settings
+      chart
+        .title('Population in The Shire')
+        // set chart radius
+        .radius('43%');
+
+      // set container id for the chart
+      chart.container('container_pizza');
+      // initiate chart drawing
+      chart.draw();
+    });
+
+  </script>
 
 {% endblock content %}
