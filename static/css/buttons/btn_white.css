@@ -1,5 +1,4 @@
 .white_button {
-  /* Variables */
   --button_radius: 0.90em;
   --button_color: #e8e8e8;
   --button_outline_color: #000000;
@@ -25,11 +24,9 @@
 }
 
 .white_button:hover .button_top_menu {
-  /* Pull the button upwards when hovered */
   transform: translateY(-0.33em);
 }
 
-.white_button:active .button_to_menu {
-  /* Push the button downwards when pressed */
+.white_button:active .button_top_menu {
   transform: translateY(0);
 }

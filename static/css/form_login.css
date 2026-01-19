@@ -2,7 +2,8 @@ body {
   /* fallback */
   /* background-color: #f2fbf3; */
   /* gradiente suave com 3 tons verdes (leve e natural) */
-  background-image: linear-gradient(to bottom, #0009, transparent);
+  /* background-image: linear-gradient(to bottom, #0009, transparent); */
+  background-image: url('../img/img_riobranco_bg_2.jpeg');
 }
 
 .container {

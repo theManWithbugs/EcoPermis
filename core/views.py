@@ -13,6 +13,7 @@ from decouple import config
 from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
 from functools import wraps
+from datetime import date
 
 #Local imports
 from core.forms import *
@@ -217,11 +218,6 @@ def api_pesq_n_aprovadas(request):
 #Utilização de UGAI
 #------------------------------------------------------------------------#
 #------------------------------------------------------------------------#
-@login_required
-def ugais_naprov(request):
-    template_name = 'commons/include/ugais/ped_ugai_pend.html'
-    return render(request, template_name)
-
 def api_ugai_solicitadas(request):
     if not request.user.is_authenticated:
         return JsonResponse(
@@ -275,140 +271,10 @@ def info_solic_ugai(request, id):
 #------------------------------------------------------------------------#
 @login_required
 @dados_pessoais_required
-def solic_pesquisa(request):
-    template_name = 'commons/include/solic_pesquisa.html'
-
-    user = request.user
-
-    # dados_pessoais = DadosPessoais.objects.filter(usuario=request.user)
-    MembroEquipeFormset = inlineformset_factory(
-        DadosSolicPesquisa, MembroEquipe, form=MembroEquipeForm,
-        extra=1, can_delete=True
-    )
-
-    prefix = 'membros'
-
-    if request.method == 'GET':
-        form = DadosPesqForm()
-        formset = MembroEquipeFormset(prefix=prefix)
-        context = {
-            'form': form,
-            'formset': formset,
-        }
-        return render(request, template_name, context)
-
-    # POST
-    form = DadosPesqForm(request.POST)
-    if form.is_valid():
-        obj_paiSaved = form.save(commit=False)
-        obj_paiSaved.user_solic = user
-        obj_paiSaved.save()
-
-        formset = MembroEquipeFormset(request.POST, instance=obj_paiSaved, prefix=prefix)
-
-        if formset.is_valid():
-
-            try:
-                formset.save()
-                messages.success(request, 'Pesquisa solicitada com sucesso!')
-
-                data = format_data_br(str(obj_paiSaved.data_solicitacao))
-
-                destinatarios = ['wilianaraujo407@gmail.com']  # pode adicionar outros
-                assunto = "STATUS: Aguardando aprovação"
-
-                # Corpo em texto simples (fallback)
-                texto_simples = "Sua pesquisa foi solicitada com sucesso!"
-
-                html_content = f"""
-                <html>
-                <body style="font-family: Arial, sans-serif; color: #333;">
-
-                    <h2 style="color:#2c3e50;">
-                        Pesquisa Solicitada com Sucesso!
-                    </h2>
-
-                    <p style="font-size: 15px;">
-                        <strong>Solicitante:</strong> {request.user.username}<br>
-                        <strong>Ação a ser realizada:</strong> {obj_paiSaved.acao_realizada}<br>
-                        <strong>Data da solicitação:</strong> {data}
-                    </p>
-
-                    <br>
-                    <p style="font-size: 14px; color:#555;">
-                        Atenciosamente,<br>
-                        <strong>SEMA - ECO Permis</strong>
-                    </p>
-
-                </body>
-                </html>
-                """
-
-                email = EmailMultiAlternatives(
-                    subject=assunto,
-                    body=texto_simples,
-                    from_email=settings.EMAIL_HOST_USER,
-                    to=destinatarios
-                )
-
-                email.attach_alternative(html_content, "text/html")
-                email.send()
-            except Exception as e:
-                messages.error(request, f'ocorreu um erro: {e}')
-
-
-            return redirect('info_pesquisa', obj_paiSaved.id)
-        else:
-            # formset invalid, fall through to re-render with errors
-            pass
-    else:
-        # parent form invalid; bind formset to POST so user entries are preserved
-        formset = MembroEquipeFormset(request.POST, prefix=prefix)
-        print((request, f"Erros: {form.errors}"))
-
-    context = {
-        'form': form,
-        'formset': formset,
-    }
-
-    return render(request, template_name, context)
-
-@login_required
-@dados_pessoais_required
-def solic_ugais(request):
-    template_name = 'commons/include/ugais/solic_ugai.html'
-
-    form = Solic_Ugai(request.POST or None)
-
-    user = request.user
-    usuario = request.user.id
-    dados_pss = DadosPessoais.objects.filter(usuario=usuario).first()
-
-    if dados_pss == None:
-        return redirect('dados_pessoais')
-
-    if request.method == 'POST':
-        if form.is_valid():
-            obj = form.save(commit=False)
-            obj.user_solic = user
-            obj.save()
-            messages.success(request, 'Solicitação efetuada com sucesso!')
-            return redirect('home')
-        else:
-            messages.error(request, f"Erros: {form.errors}")
-    else:
-        form = Solic_Ugai()
-
-    context = {
-        'form': form
-    }
-
-    return render(request, template_name, context)
-
-@login_required
-@dados_pessoais_required
 def realizar_solic(request):
     template_name = 'commons/realizar_solic.html'
+
+    dados_user = DadosPessoais.objects.filter(usuario=request.user).first()
 
     MembroEquipeFormset = inlineformset_factory(
             DadosSolicPesquisa, MembroEquipe, form=MembroEquipeForm,
@@ -424,7 +290,8 @@ def realizar_solic(request):
         context = {
             'form_solic': form_solic,
             'formset': formset,
-            'form_ugai': form_ugai
+            'form_ugai': form_ugai,
+            'dados_user': dados_user
         }
         return render(request, template_name, context)
 
@@ -433,23 +300,6 @@ def realizar_solic(request):
 
         if form_type == 'solic_pesq':
             user = request.user
-
-            # dados_pessoais = DadosPessoais.objects.filter(usuario=request.user)
-            # MembroEquipeFormset = inlineformset_factory(
-            #     DadosSolicPesquisa, MembroEquipe, form=MembroEquipeForm,
-            #     extra=1, can_delete=True
-            # )
-
-            # prefix = 'membros'
-
-            # if request.method == 'GET':
-            #     form_solic = DadosPesqForm()
-            #     formset = MembroEquipeFormset(prefix=prefix)
-            #     context = {
-            #         'form': form,
-            #         'formset': formset,
-            #     }
-            #     return render(request, template_name, context)
 
             # POST
             form_solic = DadosPesqForm(request.POST)
@@ -517,7 +367,7 @@ def realizar_solic(request):
             else:
                 # parent form invalid; bind formset to POST so user entries are preserved
                 formset = MembroEquipeFormset(request.POST, prefix=prefix)
-                print((request, f"Erros: {form_solic.errors}"))
+                # print((request, f"Erros: {form_solic.errors}"))
 
         elif form_type == 'aut_ugai':
             form_ugai = Solic_Ugai(request.POST or None)
@@ -527,15 +377,61 @@ def realizar_solic(request):
             if form_ugai.is_valid():
                 obj = form_ugai.save(commit=False)
                 obj.user_solic = user
-                obj.save()
-                messages.success(request, 'Solicitação efetuada com sucesso!')
-                return redirect('home')
+                try:
+                    obj.save()
+                    messages.success(request, 'Solicitação efetuada com sucesso!')
+
+                    data_hoje = date.today()
+                    data_br = data_hoje.strftime('%d/%m/%Y')
+
+                    destinatarios = ['wilianaraujo407@gmail.com']  # pode adicionar outros
+                    assunto = "STATUS: Aguardando aprovação"
+
+                    # Corpo em texto simples (fallback)
+                    texto_simples = "Sua pesquisa foi solicitada com sucesso!"
+
+                    html_content = f"""
+                    <html>
+                    <body style="font-family: Arial, sans-serif; color: #333;">
+
+                        <h2 style="color:#2c3e50;">
+                            Autorização para uso de UGAI solicitado com sucesso!
+                        </h2>
+
+                        <p style="font-size: 15px;">
+                            <strong>Solicitante:</strong> {request.user.username}<br>
+                            <strong>Atividade a desenvolver:</strong> {obj.ativ_desenv}<br>
+                            <strong>Data da solicitação:</strong> {data_br}
+                        </p>
+
+                        <br>
+                        <p style="font-size: 14px; color:#555;">
+                            Atenciosamente,<br>
+                            <strong>SEMA - ECO Permis</strong>
+                        </p>
+
+                    </body>
+                    </html>
+                    """
+
+                    email = EmailMultiAlternatives(
+                        subject=assunto,
+                        body=texto_simples,
+                        from_email=settings.EMAIL_HOST_USER,
+                        to=destinatarios
+                    )
+
+                    email.attach_alternative(html_content, "text/html")
+                    email.send()
+                    return redirect('realizar_solic')
+                except Exception as e:
+                    messages.error(request, f'ocorreu um erro: {e}')
             else:
                 messages.error(request, f"Erros: {form_ugai.errors}")
 
     context = {
         'formset': formset,
-        'form_ugai': form_ugai
+        'form_ugai': form_ugai,
     }
 
 
@@ -553,7 +449,7 @@ def pesquisas_n_aprovadas(request):
 
 def api_pesq_aprov(request):
     # Filtra apenas registros com status=False
-    dados = DadosSolicPesquisa.objects.filter(status=True)
+    dados = DadosSolicPesquisa.objects.filter(status=True).order_by('-data_solicitacao')
 
     paginator = Paginator(dados, 5)
 
