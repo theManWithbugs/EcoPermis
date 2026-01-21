@@ -46,6 +46,8 @@ urlpatterns = [
     # path('home/solic_ugai/', views.solic_ugais, name='solic_ugai'),
     path('home/info_solic_ugai/<str:id>/', views.info_solic_ugai, name='info_solic_ugai'),
 
+    path('home/aprovar_soli_ugai/<str:id>/', views.aprov_uso_ugai, name='aprov_uso_ugai'),
+
     #Json responses above here
     path('api/ped_ugais_naprov/', views.api_ugai_solicitadas, name='ugai_naprov'),
     #-------------------------------------------------------------------------------------#

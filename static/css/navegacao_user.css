@@ -10,10 +10,13 @@ html, body {
 }
 
 body {
+  height: 100vh;
   background-color: #2f7d4a;
-  background-image: linear-gradient(to bottom, #0006, transparent);
+  background-image: url("../img/img_amazonia_bg.jpg");
   background-repeat: no-repeat;
   background-size: cover;
+  background-position: center center;
+  background-attachment: fixed;
   padding: 0 20px;
   box-sizing: border-box;
 }

@@ -1,0 +1,180 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block css %}{% endblock css %}
+
+{% block content %}
+
+<div class="container mb-4">
+  <input type="number" id="year">
+  <button onclick="send_year()">Buscar</button>
+</div>
+
+<div id="box_buttons"></div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4" style="height: 400px;">
+        <canvas id="pie_ugais"></canvas>
+      </div>
+      <div class="col-md-8">
+        <canvas id="barChartUgais"></canvas>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4" style="height: 400px;">
+        <canvas id="oriUgais"></canvas>
+      </div>
+      <div class="col-md-8" style="height: 400px;">
+        <!-- <canvas></canvas> -->
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
+
+{% block js %}
+  <script>
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+          cookie = cookie.trim();
+          if (cookie.startsWith(name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+    let pie_chart = null;
+    let bar_chart = null;
+    let pie_chart_ori = null;
+
+    function send_year() {
+      const year = document.getElementById('year').value;
+      fetch('/api/dashboard/js_chart_resp/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+          year: year
+        })
+      })
+      .then(response => response.json())
+      .then(dados => {
+
+        const labels = []
+        const data = []
+        const objs = dados.objs;
+        for (const [chave, valor] of Object.entries(objs)) {
+          labels.push(chave);
+          data.push(valor);
+        }
+
+        if (pie_chart) {
+          pie_chart.destroy();
+        }
+
+        const ctxUgais = document.getElementById('pie_ugais');
+        pie_chart = new Chart(ctxUgais, {
+          type: 'pie',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: '# of Votes',
+              data: data,
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+
+        if (bar_chart) {
+          bar_chart.destroy();
+        }
+
+        const bar_chart_ugais = document.getElementById('barChartUgais');
+        bar_chart = new Chart(bar_chart_ugais, {
+            type: 'bar',
+            data: {
+              labels: labels,
+              datasets: [{
+                label: '# of Votes',
+                data: data,
+                borderWidth: 1
+              }]
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true
+                }
+              }
+            }
+        });
+      })
+      .catch(error => console.error(error));
+
+      fetch('/api/dashboard/js_ori_resp/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+          year: year
+        })
+      })
+      .then(response => response.json())
+      .then(dados => {
+
+        const labels = []
+        const data = []
+        const objs = dados.objs;
+        for (const [chave, valor] of Object.entries(objs)) {
+          labels.push(chave);
+          data.push(valor);
+        }
+
+        if (pie_chart_ori) {
+          pie_chart_ori.destroy();
+        }
+
+        const oriUgais = document.getElementById('oriUgais');
+        pie_chart_ori = new Chart(oriUgais, {
+          type: 'pie',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: '# of Votes',
+              data: data,
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+
+      })
+      .catch(error => console.error(error));
+    }
+  </script>
+{% endblock js %}

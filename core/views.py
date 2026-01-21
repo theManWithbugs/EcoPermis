@@ -263,6 +263,19 @@ def info_solic_ugai(request, id):
     }
 
     return render(request, template_name, context)
+
+@login_required
+@user_passes_test(is_staff, login_url='permission_denied')
+def aprov_uso_ugai(request, id):
+
+    if request.method == 'POST':
+        try:
+            SolicitacaoUgais.objects.filter(id=id).update(status=True)
+            messages.success(request, 'Solicitação aprovada com sucesso!')
+        except Exception as e:
+            messages.error(request, f'Ocorreu um erro: {e}')
+
+    return redirect('info_solic_ugai', id)
 #------------------------------------------------------------------------#
 #------------------------------------------------------------------------#
 
@@ -376,6 +389,7 @@ def realizar_solic(request):
 
             if form_ugai.is_valid():
                 obj = form_ugai.save(commit=False)
+                id_ugai = obj.id
                 obj.user_solic = user
                 try:
                     obj.save()
@@ -423,7 +437,7 @@ def realizar_solic(request):
 
                     email.attach_alternative(html_content, "text/html")
                     email.send()
-                    return redirect('realizar_solic')
+                    return redirect('info_solic_ugai', id_ugai)
                 except Exception as e:
                     messages.error(request, f'ocorreu um erro: {e}')
             else:
