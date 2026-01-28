@@ -2,32 +2,38 @@
 {% load static %}
 
 {% block css %}
-  <link rel="stylesheet" href="{% static 'css/pesquisas_solic/pesquisas.css' %}">
-  <link rel="stylesheet" href="{% static 'css/buttons/btn_paginator.css' %}">
-  <link rel="stylesheet" href="{% static 'css/buttons/btn_white.css' %}">
+  <link rel="stylesheet" href="{% static 'css/pesquisas.css' %}">
+  <link rel="stylesheet" href="{% static 'css/btn_paginator.css' %}">
+  <link rel="stylesheet" href="{% static 'css/btn_white.css' %}">
 {% endblock css %}
 
 {% block content %}
 
-<div class="d-flex justify-content-center">
-  <div class="bg-light px-4 py-3 rounded shadow-sm">
-    <h3 class="text-dark fw-bold mb-0 text-center">
-      Listar solicitações recebidas
-    </h3>
-  </div>
+<div class="bg-light px-4 py-3 rounded shadow-sm">
+  <h3 class="text-dark fw-bold mb-0 text-center">
+    Listar solicitações recebidas
+  </h3>
 </div>
 
-<button onclick="carregarPesqAprovada()" class="white_button">
-  <span class="button_top_menu"> Aprovadas </span>
-</button>
+<div class="row gap-2 mt-3 p-1 ms-1">
+  <div class="col-md-auto border border-1 rounded p-2 shadow-sm">
+    <h5 class="text-center">Solicitações de pesquisa</h5>
+    <button onclick="carregarPesqAprovada()" class="white_button">
+      <span class="button_top_menu"> Aprovadas </span>
+    </button>
 
-<button onclick="carregarPesqNaoAprovada()" class="white_button">
-  <span class="button_top_menu"> Não aprovadas </span>
-</button>
+    <button onclick="carregarPesqNaoAprovada()" class="white_button">
+      <span class="button_top_menu"> Não aprovadas </span>
+    </button>
+  </div>
 
-<button onclick="carregarSolicUgai()" class="white_button">
-  <span class="button_top_menu"> UGAI </span>
-</button>
+  <div class="col-md-auto border border-1 rounded p-2 shadow-sm">
+    <h5>Solicitações de UGAI</h5>
+    <button onclick="carregarSolicUgai()" class="white_button">
+      <span class="button_top_menu"> UGAI </span>
+    </button>
+  </div>
+</div>
 
 <div id="container-resultados"></div>
 

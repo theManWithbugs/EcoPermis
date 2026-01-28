@@ -43,6 +43,19 @@ Q_CLUSTER = {
     "orm": "default",
 }
 
+REST_FRAMEWORK = {
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.UserRateThrottle',
+        'rest_framework.throttling.AnonRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        #Limita usuarios logados a 30 req por minuto
+        'user': '30/min',
+        #Limita anonimous a 30 req por minuto
+        'anon': '10/min',
+    }
+}
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

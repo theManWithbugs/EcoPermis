@@ -14,6 +14,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
 from functools import wraps
 from datetime import date
+from django.shortcuts import get_object_or_404
 
 #Local imports
 from core.forms import *
@@ -43,11 +44,6 @@ def dados_pessoais_required(view_func):
 
 def is_staff(user):
     return user.is_staff
-
-@login_required
-def pagina_sucesso(request):
-    template_name = 'commons/include/msg_pages/pagina_sucesso.html'
-    return render(request, template_name)
 
 def login_view(request):
     template_name = 'auth/login.html'
@@ -86,7 +82,7 @@ def perfil(request):
 def editar_perfil(request, id):
     template_name = 'auth/alt_dados.html'
 
-    dados = DadosPessoais.objects.filter(usuario=id).first()
+    dados = get_object_or_404(DadosPessoais, usuario=id)
 
     if request.method == 'POST':
         form = DadosPssForm(request.POST or None, instance=dados)
@@ -141,16 +137,6 @@ def dados_pessoais(request):
     }
 
     return render(request, template_name, context)
-
-@login_required
-def pesquisas_aprovadas(request):
-    template_name = 'commons/include/nav_pesquisas/pesq_aprovadas.html'
-    return render(request, template_name)
-
-@login_required
-def pesquisas_n_aprovadas(request):
-    template_name = 'commons/include/nav_pesquisas/pesq_n_aprov.html'
-    return render(request, template_name)
 
 def api_pesq_aprov(request):
     if not request.user.is_authenticated:
@@ -217,7 +203,7 @@ def api_pesq_n_aprovadas(request):
 
 #Utilização de UGAI
 #------------------------------------------------------------------------#
-#------------------------------------------------------------------------#
+#------------------------------------------------------------------------
 def api_ugai_solicitadas(request):
     if not request.user.is_authenticated:
         return JsonResponse(
@@ -270,8 +256,16 @@ def aprov_uso_ugai(request, id):
 
     if request.method == 'POST':
         try:
-            SolicitacaoUgais.objects.filter(id=id).update(status=True)
+            # SolicitacaoUgais.objects.filter(id=id).update(status=True)
+            obj = get_object_or_404(SolicitacaoUgais, id=id)
+            obj.status = True
+            obj.save()
+
             messages.success(request, 'Solicitação aprovada com sucesso!')
+
+        except SolicitacaoUgais.DoesNotExist:
+            messages.error(request, 'Solicitação de UGAI não encontrada.')
+
         except Exception as e:
             messages.error(request, f'Ocorreu um erro: {e}')
 
@@ -287,26 +281,19 @@ def aprov_uso_ugai(request, id):
 def realizar_solic(request):
     template_name = 'commons/realizar_solic.html'
 
-    dados_user = DadosPessoais.objects.filter(usuario=request.user).first()
+    # dados_user = DadosPessoais.objects.filter(usuario=request.user).first()
+    dados_user = get_object_or_404(DadosPessoais, usuario=request.user)
 
     MembroEquipeFormset = inlineformset_factory(
             DadosSolicPesquisa, MembroEquipe, form=MembroEquipeForm,
             extra=1, can_delete=True
         )
 
+    #Declaração de variaveis locais
     prefix = 'membros'
-
-    if request.method == 'GET':
-        form_solic = DadosPesqForm()
-        formset = MembroEquipeFormset(prefix=prefix)
-        form_ugai = Solic_Ugai()
-        context = {
-            'form_solic': form_solic,
-            'formset': formset,
-            'form_ugai': form_ugai,
-            'dados_user': dados_user
-        }
-        return render(request, template_name, context)
+    form_solic = DadosPesqForm()
+    formset = MembroEquipeFormset(prefix=prefix)
+    form_ugai = Solic_Ugai()
 
     if request.method == 'POST':
         form_type = request.POST.get("form_type")
@@ -324,59 +311,20 @@ def realizar_solic(request):
                 formset = MembroEquipeFormset(request.POST, instance=obj_paiSaved, prefix=prefix)
 
                 if formset.is_valid():
-
                     try:
                         formset.save()
                         messages.success(request, 'Pesquisa solicitada com sucesso!')
 
                         data = format_data_br(str(obj_paiSaved.data_solicitacao))
+                        username = request.user.username
+                        acao_realizada = obj_paiSaved.acao_realizada
 
-                        destinatarios = ['wilianaraujo407@gmail.com']  # pode adicionar outros
-                        assunto = "STATUS: Aguardando aprovação"
-
-                        # Corpo em texto simples (fallback)
-                        texto_simples = "Sua pesquisa foi solicitada com sucesso!"
-
-                        html_content = f"""
-                        <html>
-                        <body style="font-family: Arial, sans-serif; color: #333;">
-
-                            <h2 style="color:#2c3e50;">
-                                Pesquisa Solicitada com Sucesso!
-                            </h2>
-
-                            <p style="font-size: 15px;">
-                                <strong>Solicitante:</strong> {request.user.username}<br>
-                                <strong>Ação a ser realizada:</strong> {obj_paiSaved.acao_realizada}<br>
-                                <strong>Data da solicitação:</strong> {data}
-                            </p>
-
-                            <br>
-                            <p style="font-size: 14px; color:#555;">
-                                Atenciosamente,<br>
-                                <strong>SEMA - ECO Permis</strong>
-                            </p>
-
-                        </body>
-                        </html>
-                        """
-
-                        email = EmailMultiAlternatives(
-                            subject=assunto,
-                            body=texto_simples,
-                            from_email=settings.EMAIL_HOST_USER,
-                            to=destinatarios
-                        )
-
-                        email.attach_alternative(html_content, "text/html")
-                        email.send()
+                        email_solic_ugai(request, username, acao_realizada, data)
+                        return redirect('info_pesquisa', obj_paiSaved.id)
                     except Exception as e:
                         messages.error(request, f'ocorreu um erro: {e}')
-
-                    return redirect('info_pesquisa', obj_paiSaved.id)
                 else:
-                    # formset invalid, fall through to re-render with errors
-                    pass
+                    messages.error(request, f"Erro: {formset.errors}")
             else:
                 # parent form invalid; bind formset to POST so user entries are preserved
                 formset = MembroEquipeFormset(request.POST, prefix=prefix)
@@ -398,45 +346,10 @@ def realizar_solic(request):
                     data_hoje = date.today()
                     data_br = data_hoje.strftime('%d/%m/%Y')
 
-                    destinatarios = ['wilianaraujo407@gmail.com']  # pode adicionar outros
-                    assunto = "STATUS: Aguardando aprovação"
+                    username = request.user.username
+                    ativ_desenv = obj.ativ_desenv
 
-                    # Corpo em texto simples (fallback)
-                    texto_simples = "Sua pesquisa foi solicitada com sucesso!"
-
-                    html_content = f"""
-                    <html>
-                    <body style="font-family: Arial, sans-serif; color: #333;">
-
-                        <h2 style="color:#2c3e50;">
-                            Autorização para uso de UGAI solicitado com sucesso!
-                        </h2>
-
-                        <p style="font-size: 15px;">
-                            <strong>Solicitante:</strong> {request.user.username}<br>
-                            <strong>Atividade a desenvolver:</strong> {obj.ativ_desenv}<br>
-                            <strong>Data da solicitação:</strong> {data_br}
-                        </p>
-
-                        <br>
-                        <p style="font-size: 14px; color:#555;">
-                            Atenciosamente,<br>
-                            <strong>SEMA - ECO Permis</strong>
-                        </p>
-
-                    </body>
-                    </html>
-                    """
-
-                    email = EmailMultiAlternatives(
-                        subject=assunto,
-                        body=texto_simples,
-                        from_email=settings.EMAIL_HOST_USER,
-                        to=destinatarios
-                    )
-
-                    email.attach_alternative(html_content, "text/html")
-                    email.send()
+                    email_solic_ugai(request, username, ativ_desenv, data_br)
                     return redirect('info_solic_ugai', id_ugai)
                 except Exception as e:
                     messages.error(request, f'ocorreu um erro: {e}')
@@ -444,73 +357,13 @@ def realizar_solic(request):
                 messages.error(request, f"Erros: {form_ugai.errors}")
 
     context = {
+        'form_solic': form_solic,
         'formset': formset,
         'form_ugai': form_ugai,
+        'dados_user': dados_user,
     }
 
-
-    return render(request, template_name)
-
-@login_required
-def pesquisas_aprovadas(request):
-    template_name = 'commons/include/nav_pesquisas/pesq_aprovadas.html'
-    return render(request, template_name)
-
-@login_required
-def pesquisas_n_aprovadas(request):
-    template_name = 'commons/include/nav_pesquisas/pesq_n_aprov.html'
-    return render(request, template_name)
-
-def api_pesq_aprov(request):
-    # Filtra apenas registros com status=False
-    dados = DadosSolicPesquisa.objects.filter(status=True).order_by('-data_solicitacao')
-
-    paginator = Paginator(dados, 5)
-
-    # Número da página vindo da query string (?page=)
-    page_number = request.GET.get('page', 1)
-    page_obj = paginator.get_page(page_number)
-
-    # Converte os objetos em dicionários incluindo o campo id
-    itens_json = []
-    for item in page_obj.object_list:
-        d = model_to_dict(item)
-        d['id'] = str(item.id)  # UUID convertido para string
-        itens_json.append(d)
-
-    # Retorna os dados em formato JSON
-    return JsonResponse({
-        'items': itens_json,
-        'currentPage': page_obj.number,
-        'totalPages': paginator.num_pages,
-        'hasNext': page_obj.has_next(),
-        'hasPrevious': page_obj.has_previous(),
-    })
-
-def api_pesq_n_aprovadas(request):
-
-    #Dessa vez filtra pelo items com status = false
-    dados = DadosSolicPesquisa.objects.filter(status=False).order_by('data_solicitacao')
-
-    paginator = Paginator(dados, 5)
-
-    page_number = request.GET.get('page', 1)
-    page_obj = paginator.get_page(page_number)
-
-    itens_json = []
-    for item in page_obj.object_list:
-        d = model_to_dict(item)
-        d['id'] = str(item.id)
-        itens_json.append(d)
-
-    # Retorna os dados em formato JSON
-    return JsonResponse({
-        'items': itens_json,
-        'currentPage': page_obj.number,
-        'totalPages': paginator.num_pages,
-        'hasNext': page_obj.has_next(),
-        'hasPrevious': page_obj.has_previous(),
-    })
+    return render(request, template_name, context)
 
 @login_required
 def info_pesquisa(request, id):
@@ -563,7 +416,8 @@ def info_pesquisa(request, id):
 @login_required
 def excluir_arq(request, id):
 
-    pesquisa = DadosSolicPesquisa.objects.filter(id=id).first()
+    # pesquisa = DadosSolicPesquisa.objects.filter(id=id).first()
+    pesquisa = get_object_or_404(DadosSolicPesquisa, id=id)
     if request.method == 'POST':
         documento_id = request.POST.get('documento_id')
 
@@ -589,11 +443,21 @@ def excluir_arq(request, id):
 @user_passes_test(is_staff, login_url='permission_denied')
 def aprovar_pesquisa(request, id):
 
+    username = request.user.username
+
     if request.method == 'POST':
-        # MaterialTipo.objects.filter(id=item.id).update(saida_obj=None)
         try:
-            DadosSolicPesquisa.objects.filter(id=id).update(status=True)
+            obj = get_object_or_404(DadosSolicPesquisa, id=id)
+            obj.status = True
+            obj.save()
             messages.success(request, 'Pesquisa aprovada com sucesso!')
+
+            #Email to user
+            email_pesq_aprov(request, username)
+
+        except DadosSolicPesquisa.DoesNotExist:
+            messages.error(request, 'Pesquisa não encontrada.')
+
         except Exception as e:
             messages.error(request, f'Ocorreu um erro: {e}')
 
@@ -607,12 +471,20 @@ def minhas_solic(request):
     user = request.user.id
     pesq_user = DadosSolicPesquisa.objects.filter(user_solic=user)
 
-    contador = 0
-    for x in pesq_user: contador+=1
+    contador_pesq = 0
+    for x in pesq_user: contador_pesq+=1
+
+    ugais_solic = SolicitacaoUgais.objects.filter(user_solic=user)
+
+    contador_ugai = 0
+    for x in ugais_solic: contador_ugai+=1
 
     context = {
         'pesquisas': pesq_user,
-        'quant_pesq': contador
+        'quant_pesq': contador_pesq,
+
+        'ugais': ugais_solic,
+        'quant_ugai': contador_ugai
     }
 
     return render(request, template_name, context)
@@ -621,12 +493,6 @@ def minhas_solic(request):
 @login_required
 def listar_solicitacoes(request):
     template_name = 'commons/listar_solic.html'
-    return render(request, template_name)
-
-@login_required
-def pagina_teste(request):
-    template_name = 'commons/include/pagina_test.html'
-
     return render(request, template_name)
 
 @login_required
