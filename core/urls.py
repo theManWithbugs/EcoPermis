@@ -42,4 +42,9 @@ urlpatterns = [
     #Json responses above here
     path('api/ped_ugais_naprov/', views.api_ugai_solicitadas, name='ugai_naprov'),
     #-------------------------------------------------------------------------------------#
+
+    path('api/get_years/', views.resp_get_years, name='get_years'),
+
+    path('api/render_api_page/', views.render_teste_page, name='render_api_page'),
+    path('api/get_page_by_year/', views.get_page_by_year, name='get_year_page')
 ]

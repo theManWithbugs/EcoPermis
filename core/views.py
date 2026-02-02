@@ -7,10 +7,10 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
-from django.core.mail import send_mail
-from django.core.mail import EmailMultiAlternatives
-from decouple import config
-from django.conf import settings
+# from django.core.mail import send_mail
+# from django.core.mail import EmailMultiAlternatives
+# from decouple import config
+# from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
 from functools import wraps
 from datetime import date
@@ -19,6 +19,8 @@ from django.shortcuts import get_object_or_404
 #Local imports
 from core.forms import *
 from .utils import *
+
+import json
 
 #Debug the code
 # messages.error(request, f"Erros: {form.errors}")
@@ -71,6 +73,7 @@ def logoutView(request):
     return redirect('login')
 
 @login_required
+@dados_pessoais_required
 def perfil(request):
     template_name = 'auth/perfil.html'
 
@@ -254,6 +257,8 @@ def info_solic_ugai(request, id):
 @user_passes_test(is_staff, login_url='permission_denied')
 def aprov_uso_ugai(request, id):
 
+    username = request.user.username
+
     if request.method == 'POST':
         try:
             # SolicitacaoUgais.objects.filter(id=id).update(status=True)
@@ -262,6 +267,7 @@ def aprov_uso_ugai(request, id):
             obj.save()
 
             messages.success(request, 'Solicitação aprovada com sucesso!')
+            email_ugai_aprov(request, username)
 
         except SolicitacaoUgais.DoesNotExist:
             messages.error(request, 'Solicitação de UGAI não encontrada.')
@@ -499,3 +505,106 @@ def listar_solicitacoes(request):
 def realizar_busca(request):
     template_name = 'commons/search.html'
     return render(request, template_name)
+
+def resp_get_years(request):
+    if not request.user.is_authenticated:
+        return JsonResponse(
+            {'error': 'Usuario não autenticado!'},
+            status=401
+        )
+
+    if request.method == 'GET':
+        years = SolicitacaoUgais.objects.values('data_solicitacao__year')
+
+        resultado = []
+        for x in years:
+            if x not in resultado:
+                resultado.append(x)
+
+        return JsonResponse({
+            'mensagem': 'mensagem enviada com sucesso!',
+            'years': resultado
+        })
+
+
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        year = data.get('year')
+
+        objs = SolicitacaoUgais.objects.filter(data_solicitacao__year=year)
+
+        paginator = Paginator(objs, 5)
+
+        page_number = request.GET.get('page', 1)
+        page_obj = paginator.get_page(page_number)
+
+        itens_json = []
+        for item in objs:
+            d = model_to_dict(item)
+            d['id'] = str(item.id)
+            itens_json.append(d)
+
+        return JsonResponse({
+            'mensagem': 'mensagem enviada com sucesso! (POST)',
+            'objs': itens_json,
+            'currentPage': page_obj.number,
+            'totalPages': paginator.num_pages,
+            'hasNext': page_obj.has_next(),
+            'hasPrevious': page_obj.has_previous()
+        })
+
+#-------------------------------------------------------------------#
+
+@login_required
+def render_teste_page(request):
+    template_name = 'commons/include/test_filter_resp.html'
+    return render(request,template_name)
+
+def get_page_by_year(request):
+    if not request.user.is_authenticated:
+        return JsonResponse(
+            {'error': 'Usuario não autenticado!'},
+            status=401
+        )
+
+    if request.method == 'GET':
+        year = request.GET.get('year')
+        page = request.GET.get('page')
+
+        objs = SolicitacaoUgais.objects.all()
+
+        if year:
+            objs = SolicitacaoUgais.objects.filter(data_solicitacao__year=year)
+
+        paginator = Paginator(objs, 5)
+        page_obj = paginator.get_page(page)
+
+        years = SolicitacaoUgais.objects.values('data_solicitacao__year')
+
+        resultado = []
+        for x in years:
+            if x not in resultado:
+                resultado.append(x)
+
+        return JsonResponse({
+            'results': list(page_obj.object_list.values()),
+            'page': page_obj.number,
+            'num_pages': paginator.num_pages,
+            'years': resultado
+        })
+
+    # if request.method == 'POST':
+    #     data = json.loads(request.body)
+    #     year = data.get('year')
+
+    #     objs = SolicitacaoUgais.objects.filter(data_solicitacao__year=year)
+
+    #     itens_json = []
+    #     for item in objs:
+    #         d = model_to_dict(item)
+    #         d['id'] = str(item.id)
+    #         itens_json.append(d)
+
+    #     return JsonResponse({
+    #         'objs': itens_json,
+    #     })

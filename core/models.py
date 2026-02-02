@@ -19,12 +19,11 @@ class User(AbstractUser):
 class DadosPessoais(models.Model):
     usuario = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name='usuario')
-    nome = models.CharField(blank=False, null=False, max_length=80)
+    nome = models.CharField(blank=False, null=False, max_length=80, verbose_name='Nome completo:')
     sexo = models.CharField(choices=SEXO, blank=False, null=False, max_length=10)
     estado = models.CharField(
         choices=ESTADOS_BRASIL_CHOICES, blank=False, null=False, max_length=20)
-    municipio = models.CharField(
-        choices=MUNICIPIOS_CHOICES, blank=False, null=False, max_length=30)
+    municipio = models.CharField(blank=False, null=False, max_length=30)
     endereco = models.CharField(
         blank=False, null=False, max_length=120, verbose_name='Endereço')
     celular = models.CharField(blank=False, null=False, validators=[

@@ -2,20 +2,116 @@
 {% load static %}
 
 {% block css %}
-  <link rel="stylesheet" href="{% static 'css/btn_search.css' %}">
+  <link rel="stylesheet" href="{% static 'css/pesquisas.css' %}">
+  <style>
+    .button_year {
+      padding: 2px;
+      border-radius: 5px;
+      background-color: whitesmoke;
+      margin-right: 6px;
+      width: 100px;
+    }
+
+    .button_year:hover {
+      border-color: blue;
+    }
+  </style>
 {% endblock css %}
 
 {% block content %}
 
-<div class="group">
-  <svg viewBox="0 0 24 24" aria-hidden="true" class="icon">
-    <g>
-      <path
-        d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z"
-      ></path>
-    </g>
-  </svg>
-  <input class="input" type="search" placeholder="Search" />
-</div>
+<h5>Selecione o ano desejado</h5>
+<div id="container_buttons" class="mb-3"></div>
+
+<div id="container_result"></div>
 
 {% endblock content %}
+
+{% block js %}
+  <script>
+    const container = document.getElementById('container_buttons');
+    const container_resul = document.getElementById('container_result');
+
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+          cookie = cookie.trim();
+          if (cookie.startsWith(name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+    fetch(`/api/get_years/`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      },
+    })
+    .then(response => response.json())
+    .then(data => {
+      for(const x in data.years) {
+        const button = document.createElement('button');
+        button.textContent = `${data.years[x]["data_solicitacao__year"]}`;
+        button.value = `${data.years[x]["data_solicitacao__year"]}`;
+        button.className = 'button_year';
+        button.onclick = (e) => data_by_year(e.target.value);
+        container.appendChild(button);
+      }
+    })
+    .catch(error => {
+      console.log(`Ocorreu um erro: ${error}`);
+    })
+
+    function render_items(objs) {
+      objs.forEach(obj => {
+        const card = document.createElement('div');
+        card.className = 'card_items';
+
+        const titulo = document.createElement('h5');
+        titulo.textContent = `${obj["ugai"]}`;
+
+        const link = document.createElement('a');
+        link.textContent = 'Ver detalhes';
+        link.href = '#';
+
+        const data = document.createElement('p');
+        data.textContent = `${obj["ativ_desenv"]}`;
+
+        card.append(titulo, data, link);
+        container_resul.appendChild(card);
+      });
+    }
+
+    function data_by_year(year) {
+      const current_year = year;
+      fetch(`/api/get_years/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+          year: year
+        })
+      })
+      .then(response => response.json())
+      .then(dados => {
+        container_resul.innerHTML = '';
+        render_items(dados.objs);
+      })
+      .catch(error => {
+        console.log(`Ocorreu um erro: ${error}`);
+      })
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      data_by_year('2026');
+    })
+  </script>
+{% endblock js %}

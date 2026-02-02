@@ -29,6 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
         infoPaginaSpan.textContent =
           `Página ${data.currentPage} de ${data.totalPages}`;
 
+        // Caso não tenha proxima pagina ou pagina anterior,
+        // desativa o botão para o usuario
         btnAnterior.disabled = !data.hasPrevious;
         btnProximo.disabled = !data.hasNext;
       })

@@ -151,11 +151,11 @@ def email_pesq_aprov(request, username):
       <body style="font-family: Arial, sans-serif; color: #333;">
 
           <h2 style="color:#2c3e50;">
-              Pesquisa Solicitada com Sucesso!
+              Pesquisa aprovada!
           </h2>
 
           <p style="font-size: 15px;">
-              <strong>Gestor responsavel</strong> {username}<br>
+              <strong>Gestor responsavel:</strong> {username}<br>
           </p>
 
           <br>
@@ -176,6 +176,48 @@ def email_pesq_aprov(request, username):
     )
     email.attach_alternative(html_content, "text/html")
     email.send()
+    return True
+
+  except Exception as e:
+    messages.error(request, f'ocorreu um erro: {e}')
+    return False
+
+def email_ugai_aprov(request, username):
+  assunto = "STATUS: Solicitação para uso de UGAI"
+  texto_simples = "Sua solicitação para uso de UGAI foi aprovada com sucesso!"
+  destinatarios = ['wilianaraujo407@gmail.com']
+  html_content = f"""
+  <html>
+      <body style="font-family: Arial, sans-serif; color: #333;">
+
+          <h2 style="color:#2c3e50;">
+              Uso de ugai aprovado!
+          </h2>
+
+          <p style="font-size: 15px;">
+              <strong>Gestor responsavel:</strong> {username}<br>
+          </p>
+
+          <br>
+          <p style="font-size: 14px; color:#555;">
+              Atenciosamente<br>
+              <strong>SEMA - ECO Permis</strong>
+          </p>
+
+      </body>
+  </html>
+  """
+  try:
+    email = EmailMultiAlternatives(
+          subject=assunto,
+          body=texto_simples,
+          from_email=settings.EMAIL_HOST_USER,
+          to=destinatarios
+    )
+    email.attach_alternative(html_content, "text/html")
+    email.send()
+    return True
+
   except Exception as e:
     messages.error(request, f'ocorreu um erro: {e}')
     return False

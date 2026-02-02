@@ -13,7 +13,6 @@ class DadosPssForm(forms.ModelForm):
       self.fields[f].widget.attrs['class'] = 'form-control'
     self.fields['sexo'].widget.attrs.update({'class': 'form-select'})
     self.fields['estado'].widget.attrs.update({'class': 'form-select'})
-    self.fields['municipio'].widget.attrs.update({'class': 'form-select'})
 
 class DadosPesqForm(forms.ModelForm):
   class Meta:

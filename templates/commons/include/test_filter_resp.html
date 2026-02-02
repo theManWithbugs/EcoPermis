@@ -1,0 +1,21 @@
+{% extends 'commons/include/nav_user.html' %}
+{% load static %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/pesquisas.css' %}">
+{% endblock css %}
+
+{% block content %}
+
+<div id="container_buttons"></div>
+
+<div id="container_resultados"></div>
+
+<button id="btn-anterior">Anterior</button>
+<button id="btn-proximo">Próximo</button>
+
+{% endblock content %}
+
+{% block js %}
+  <script src="{% static 'js/teste_filter.js' %}"></script>
+{% endblock js %}

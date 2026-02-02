@@ -3,7 +3,6 @@ from django.http import JsonResponse
 from .utils import *
 
 import json
-from django.http import JsonResponse
 
 def base(request):
   template_name = 'dashboard/base.html'
