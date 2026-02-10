@@ -3,16 +3,33 @@
 
 {% block css %}
   <link rel="stylesheet" href="{% static 'css/pesquisas.css' %}">
+  <style>
+    .button_year {
+      padding: 2px;
+      border-radius: 5px;
+      background-color: whitesmoke;
+      margin-right: 6px;
+      width: 100px;
+    }
+
+    .button_year:hover {
+      border-color: blue;
+    }
+  </style>
 {% endblock css %}
 
 {% block content %}
+
+<div id="titulo"></div>
 
 <div id="container_buttons"></div>
 
 <div id="container_resultados"></div>
 
-<button id="btn-anterior">Anterior</button>
-<button id="btn-proximo">Próximo</button>
+<div class="d-flex justify-content-center gap-3">
+  <button id="btn-anterior">Anterior</button>
+  <button id="btn-proximo">Próximo</button>
+</div>
 
 {% endblock content %}
 

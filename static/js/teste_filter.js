@@ -1,10 +1,12 @@
 const container_buttons = document.getElementById('container_buttons')
+container_buttons.style.marginBottom = '7px';
+
 const btnAnterior = document.getElementById('btn-anterior');
 const btnProximo  = document.getElementById('btn-proximo');
 
 const container_resul = document.getElementById('container_resultados');
 
-container_buttons.style.marginBottom = '7px';
+const titulo = document.getElementById('titulo');
 
 // Guarda o ano escolhido pelo usuário
 let anoAtual = null;
@@ -37,6 +39,9 @@ function buscarDados() {
   fetch(`/api/get_page_by_year/?year=${anoAtual}&page=${paginaAtual}`)
     .then(resposta => resposta.json())
     .then(dados => {
+      titulo.textContent = `Ano selecionado: ${anoAtual}`;
+      titulo.style = 'margin-bottom: 14px; font-size: 22px;'
+
       objs = dados.results;
       container_resul.innerHTML = '';
       objs.forEach(obj => {
@@ -46,6 +51,16 @@ function buscarDados() {
         const titulo = document.createElement('h5');
         titulo.textContent = `${obj["ugai"]}`;
 
+        const subtitulo = document.createElement('p');
+
+        if (obj["status"] === true) {
+          subtitulo.textContent = 'Em-Andamento';
+          subtitulo.style.color = 'green';
+        } else {
+          subtitulo.textContent = 'Finalizado/Inativo';
+          subtitulo.style.color = 'red';
+        }
+
         const link = document.createElement('a');
         link.textContent = 'Ver detalhes';
         link.href = `/home/info_solic_ugai/${obj["id"]}/`;
@@ -53,7 +68,7 @@ function buscarDados() {
         const data = document.createElement('p');
         data.textContent = `${obj["ativ_desenv"]}`;
 
-        card.append(titulo, data, link);
+        card.append(titulo, subtitulo, data, link);
         container_resul.appendChild(card);
       });
     })
@@ -73,6 +88,7 @@ function get_buttons() {
         button.textContent = `${years[x]["data_solicitacao__year"]}`;
         button.value = `${years[x]["data_solicitacao__year"]}`;
         button.onclick = (e) => selectYear(e.target.value);
+        button.className = 'button_year';
         container_buttons.appendChild(button);
       }
     })

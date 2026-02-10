@@ -95,7 +95,6 @@ code {
   transition: all .5s;
 }
 
-/* 🔧 AQUI ESTÁ A CORREÇÃO */
 .links > a:hover {
   background: rgba(255, 255, 255, 0.10); /* branco suave */
   color: rgba(255, 255, 255, 0.95);     /* texto bem visível */

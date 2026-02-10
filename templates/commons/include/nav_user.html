@@ -24,35 +24,43 @@
 <header id="header">
   <nav class="links" style="--items: 5;">
     <a href="{% url 'perfil' %}">
-      <img src="{% static 'img/img_user_light.png' %}" width="45px">
+      <img src="{% static 'img/img_user_light.png' %}" width="42px">
       {{ request.user.username }}
     </a>
     {% if request.user.is_staff %}
       <a href="{% url 'listar_solic' %}">Solicitações
-        <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-card-checklist ms-1" viewBox="0 0 16 16">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-card-checklist ms-1" viewBox="0 0 16 16">
           <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2z"/>
           <path d="M7 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0M7 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 0 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0"/>
         </svg>
       </a>
     {% else %}
       <a href="{% url 'minhas_solic' %}">Minhas solicitações
-        <svg xmlns="http://www.w3.org/2000/svg" width="23" fill="currentColor" class="bi bi-folder-fill ms-1" viewBox="0 0 16 16">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" fill="currentColor" class="bi bi-folder-fill ms-1" viewBox="0 0 16 16">
           <path d="M9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.825a2 2 0 0 1-1.991-1.819l-.637-7a2 2 0 0 1 .342-1.31L.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3m-8.322.12q.322-.119.684-.12h5.396l-.707-.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981z"/>
         </svg>
       </a>
     {% endif %}
-    <a href="{% url 'search' %}">Buscar
-      <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-search ms-1" viewBox="0 0 16 16">
-        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-      </svg>
-    </a>
+    {% if request.user.is_staff %}
+      <a href="{% url 'render_api_page' %}">Buscar
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-search ms-1" viewBox="0 0 16 16">
+          <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+        </svg>
+      </a>
+    {% else %}
+     <a href="#">Buscar
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-search ms-1" viewBox="0 0 16 16">
+          <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+        </svg>
+      </a>
+    {% endif %}
     <a href="{% url 'realizar_solic' %}">Solicitação
-      <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-file-earmark-arrow-up-fill ms-1" viewBox="0 0 16 16">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-file-earmark-arrow-up-fill ms-1" viewBox="0 0 16 16">
         <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1M6.354 9.854a.5.5 0 0 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 8.707V12.5a.5.5 0 0 1-1 0V8.707z"/>
       </svg>
     </a>
     <a href="{% url 'logout' %}">Sair
-      <svg xmlns="http://www.w3.org/2000/svg" width="23" fill="currentColor" class="bi bi-door-open-fill ms-1" viewBox="0 0 16 16">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" fill="currentColor" class="bi bi-door-open-fill ms-1" viewBox="0 0 16 16">
         <path d="M1.5 15a.5.5 0 0 0 0 1h13a.5.5 0 0 0 0-1H13V2.5A1.5 1.5 0 0 0 11.5 1H11V.5a.5.5 0 0 0-.57-.495l-7 1A.5.5 0 0 0 3 1.5V15zM11 2h.5a.5.5 0 0 1 .5.5V15h-1zm-2.5 8c-.276 0-.5-.448-.5-1s.224-1 .5-1 .5.448.5 1-.224 1-.5 1"/>
       </svg>
     </a>
@@ -152,11 +160,10 @@
   {% block content %}
   {% endblock content %}
 </div>
+  <br><br><br>
 
 <footer class="fixed-bottom">
-  <div>
-    <img src="{% static 'img/img_sema_ac.png' %}" width="200px">
-  </div>
+  <img src="{% static 'img/img_sema_ac.png' %}" width="200px">
 </footer>
 
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>

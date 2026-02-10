@@ -554,8 +554,8 @@ def resp_get_years(request):
         })
 
 #-------------------------------------------------------------------#
-
 @login_required
+@user_passes_test(is_staff, login_url='permission_denied')
 def render_teste_page(request):
     template_name = 'commons/include/test_filter_resp.html'
     return render(request,template_name)
@@ -564,6 +564,12 @@ def get_page_by_year(request):
     if not request.user.is_authenticated:
         return JsonResponse(
             {'error': 'Usuario não autenticado!'},
+            status=401
+        )
+
+    if not request.user.is_staff:
+        return JsonResponse(
+            {'error': 'Não autorizado!'},
             status=401
         )
 
@@ -593,18 +599,6 @@ def get_page_by_year(request):
             'years': resultado
         })
 
-    # if request.method == 'POST':
-    #     data = json.loads(request.body)
-    #     year = data.get('year')
-
-    #     objs = SolicitacaoUgais.objects.filter(data_solicitacao__year=year)
-
-    #     itens_json = []
-    #     for item in objs:
-    #         d = model_to_dict(item)
-    #         d['id'] = str(item.id)
-    #         itens_json.append(d)
-
-    #     return JsonResponse({
-    #         'objs': itens_json,
-    #     })
+def no_permiss_page(request):
+    template_name = 'commons/include/msg_pages/permission_denied.html'
+    return render(request, template_name)
